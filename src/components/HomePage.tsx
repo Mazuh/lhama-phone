@@ -1,12 +1,11 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
+import Dialer from './Dialer';
 
 const HomePage: React.FunctionComponent = () => {
   return (
     <Container>
-      <p>
-        Hello, world!
-      </p>
+      <Dialer />    
     </Container>
   );
 }

@@ -71,7 +71,8 @@ const Dialer: React.FunctionComponent<DialerProps> = (props) => {
             type="search"
             value={state.number}
             onChange={handleNumberInputChange}
-            placeholder="E.g.: +13125867146"
+            placeholder="To call. E.g.: +13125867146"
+            readOnly={hasCallInProgress as boolean}
             required
           />
         </Form.Group>
@@ -81,7 +82,7 @@ const Dialer: React.FunctionComponent<DialerProps> = (props) => {
               <MaterialIcon icon="call_end" />
             </Button>
           ) : (
-            <Button variant="success" type="submit" size="sm" disabled={!canDoCalls}>
+            <Button variant="success" type="submit" size="sm" disabled={!canDoCalls} title="Make call">
               <MaterialIcon icon="call" />
             </Button>
           )}

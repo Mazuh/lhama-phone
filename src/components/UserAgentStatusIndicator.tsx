@@ -9,7 +9,7 @@ interface UserAgentStatusIndicatorProps {
 
 const UserAgentStatusIndicator: React.FunctionComponent<UserAgentStatusIndicatorProps> = (props) => {
   return (
-    <div>
+    <div title="You can only make calls when registered.">
       <span>
         <MaterialIcon icon={uaStatusToIconName(props.userAgentStatus!)} className="size-18 mr-1" />
         Status: <strong>{uaStatusToMessage(props.userAgentStatus!)}</strong>

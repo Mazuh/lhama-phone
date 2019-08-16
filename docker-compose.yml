@@ -1,0 +1,7 @@
+version: '3'
+services:
+  freeswitch:
+    build:
+      context: .
+      dockerfile: freeswitch.dockerfile
+    network_mode: 'host'

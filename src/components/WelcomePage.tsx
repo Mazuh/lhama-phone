@@ -20,7 +20,7 @@ const WelcomePage: React.FunctionComponent<Props> = (props) => {
         <p>
           Made with <span role="img" aria-label="love">❤️</span> by Mazuh.
         </p>
-        <Button variant="primary" onClick={() => props.history.push('/home')}
+        <Button variant="primary" onClick={() => props.history.push('/main')}
           >Go ahead!
         </Button>
       </div>

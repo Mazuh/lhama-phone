@@ -5,11 +5,16 @@ import SIPClient from '../sip-client';
 import MaterialIcon from '@material/react-material-icon';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-// import { RouteProps, withRouter } from 'react-router';
-import { connect } from 'react-redux';
-import { TelephonyState, makeClient, doCall, UserAgentStatus, CallStatus } from '../redux/telephony';
-import { bindActionCreators, Dispatch, AnyAction } from 'redux';
 import { FormControlProps } from 'react-bootstrap/FormControl';
+import { connect } from 'react-redux';
+import { bindActionCreators, Dispatch, AnyAction } from 'redux';
+import {
+  TelephonyState,
+  makeClient,
+  doCall,
+  UserAgentStatus,
+  CallStatus,
+} from '../redux/telephony';
 
 interface DialerProps {
   telephony?: TelephonyState;
@@ -75,11 +80,22 @@ const Dialer: React.FunctionComponent<DialerProps> = (props) => {
         </Form.Group>
         <Form.Group>
           {hasCallInProgress ? (
-            <Button variant="danger" type="button" size="sm" onClick={hangup}>
+            <Button
+              variant="danger"
+              type="button"
+              size="sm"
+              onClick={hangup}
+            >
               <MaterialIcon icon="call_end" />
             </Button>
           ) : (
-            <Button variant="success" type="submit" size="sm" disabled={!canDoCalls} title="Make call">
+            <Button
+              variant="success"
+              type="submit"
+              size="sm"
+              disabled={!canDoCalls}
+              title="Make call"
+            >
               <MaterialIcon icon="call" />
             </Button>
           )}

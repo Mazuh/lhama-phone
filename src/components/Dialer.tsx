@@ -1,6 +1,6 @@
 import React from 'react';
 // @ts-ignore
-import FlowrouteClient from 'jssip_client';
+import SIPClient from '../sip-client';
 // end of ts ignoreds
 import MaterialIcon from '@material/react-material-icon';
 import Form from 'react-bootstrap/Form';
@@ -13,25 +13,30 @@ import { FormControlProps } from 'react-bootstrap/FormControl';
 
 interface DialerProps {
   telephony?: TelephonyState;
-  makeClient?(): FlowrouteClient;
-  doCall?(client: FlowrouteClient): void;
+  makeClient?(): SIPClient;
+  doCall?(client: any): void;
 };
 
 const Dialer: React.FunctionComponent<DialerProps> = (props) => {
-  const [telClient, setClient] = React.useState(null);
+  const [telClient, setClient] = React.useState();
+  const [state, setState] = React.useState({ number: '' });
+
+  const isUserAgentReady = props.telephony!.userAgentStatus === UserAgentStatus.Registered;
+  const hasCallInProgress = props.telephony!.callStatus
+    && props.telephony!.callStatus !== CallStatus.Terminated
+    && props.telephony!.callStatus !== CallStatus.Failed;
+  const canDoCalls = isUserAgentReady && !hasCallInProgress;
+
   React.useEffect(() => {
     const newTelClient = props.makeClient!();
     if (!newTelClient) {
       return;
     }
 
-    newTelClient.start();
     setClient(newTelClient);
 
     return () => newTelClient.stop();
   }, [props.makeClient]);
-
-  const [state, setState] = React.useState({ number: '' });
 
   const handleNumberInputChange = (event: React.FormEvent<FormControlProps>) => {
     const target = event.target as HTMLInputElement;
@@ -40,13 +45,11 @@ const Dialer: React.FunctionComponent<DialerProps> = (props) => {
 
   const onSubmit = (event: React.SyntheticEvent) => {
     event.preventDefault();
-
-    if (telClient === null) {
+    if (!telClient || !state.number || !canDoCalls) {
       return;
     }
 
-    props.doCall!({ client: telClient as FlowrouteClient, destiny: state.number });
-    setState({ number: '' });
+    props.doCall!({ client: telClient as SIPClient, destiny: state.number });
   };
 
   const hangup = () => {
@@ -54,15 +57,10 @@ const Dialer: React.FunctionComponent<DialerProps> = (props) => {
       return;
     }
 
-    (telClient as FlowrouteClient).hangup();
+    (telClient as SIPClient).hangup();
+    setState({ number: '' });
   }
 
-  const isUserAgentReady = props.telephony!.userAgentStatus === UserAgentStatus.Registered;
-  const hasCallInProgress = props.telephony!.callStatus
-    && props.telephony!.callStatus !== CallStatus.Ended
-    && props.telephony!.callStatus !== CallStatus.Failed
-    && props.telephony!.callStatus !== CallStatus.Intending;
-  const canDoCalls = isUserAgentReady && !hasCallInProgress;
   return (
     <div>
       <Form onSubmit={onSubmit} inline>
@@ -73,7 +71,6 @@ const Dialer: React.FunctionComponent<DialerProps> = (props) => {
             onChange={handleNumberInputChange}
             placeholder="To call. E.g.: +13125867146"
             readOnly={hasCallInProgress as boolean}
-            required
           />
         </Form.Group>
         <Form.Group>

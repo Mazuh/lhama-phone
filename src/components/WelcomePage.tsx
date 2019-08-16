@@ -15,7 +15,7 @@ const WelcomePage: React.FunctionComponent<Props> = (props) => {
       </header>
       <div>
         <p>
-          This is an unofficial demo softphone for Flowroute's JsSIP Client.
+          This is a demo softphone.
         </p>
         <p>
           Made with <span role="img" aria-label="love">❤️</span> by Mazuh.

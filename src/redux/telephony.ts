@@ -1,5 +1,5 @@
 // @ts-ignore
-import FlowrouteClient from 'jssip_client';
+import SIPClient from '../sip-client';
 // end of ts ignoreds
 import { Dispatch } from 'react';
 
@@ -10,11 +10,11 @@ export enum UserAgentStatus {
   Registered,
   Unregistered,
   RegistrationFailed,
-  RegistrationExpiring,
+  TransportError,
 }
 
-function parseUserAgentStatus(jsSipUAEventType: string): UserAgentStatus | null {
-  switch (jsSipUAEventType) {
+function parseUserAgentStatus(sipJsUAEventType: string): UserAgentStatus | null {
+  switch (sipJsUAEventType) {
     case 'connecting':
       return UserAgentStatus.Connecting;
     case 'connected':
@@ -27,8 +27,8 @@ function parseUserAgentStatus(jsSipUAEventType: string): UserAgentStatus | null 
         return UserAgentStatus.Unregistered;
     case 'registrationFailed':
         return UserAgentStatus.RegistrationFailed;
-    case 'registrationExpiring':
-        return UserAgentStatus.RegistrationExpiring;
+    case 'transportError':
+        return UserAgentStatus.TransportError;
     default:
       return null;
   }
@@ -36,20 +36,17 @@ function parseUserAgentStatus(jsSipUAEventType: string): UserAgentStatus | null 
 
 export enum CallStatus {
   Intending = 1,
-  Connecting,
-  Confirmed,
-  Ended,
+  Accepted,
+  Terminated,
   Failed,
 }
 
-function parseCallStatus(jsSipSessionEventType: string): CallStatus | null {
-  switch (jsSipSessionEventType) {
-    case 'connecting':
-      return CallStatus.Connecting;
-    case 'confirmed':
-      return CallStatus.Confirmed;
-    case 'ended':
-      return CallStatus.Ended;
+function parseCallStatus(sipJsSessionEventType: string): CallStatus | null {
+  switch (sipJsSessionEventType) {
+    case 'accepted':
+      return CallStatus.Accepted;
+    case 'terminated':
+      return CallStatus.Terminated;
     case 'failed':
       return CallStatus.Failed;
     default:
@@ -60,15 +57,20 @@ function parseCallStatus(jsSipSessionEventType: string): CallStatus | null {
 type TelephonyAction = (
   | { type: 'SET_USER_AGENT_STATUS'; status: UserAgentStatus  }
   | { type: 'SET_CALL_STATUS'; status: CallStatus.Intending; number: string }
-  | { type: 'SET_CALL_STATUS'; status: CallStatus.Connecting }
-  | { type: 'SET_CALL_STATUS'; status: CallStatus.Confirmed }
-  | { type: 'SET_CALL_STATUS'; status: CallStatus.Ended }
+  | { type: 'SET_CALL_STATUS'; status: CallStatus.Accepted }
+  | { type: 'SET_CALL_STATUS'; status: CallStatus.Terminated }
   | { type: 'SET_CALL_STATUS'; status: CallStatus.Failed }
 );
 
 export function makeClient() {
   return (dispatch: Dispatch<TelephonyAction>) => {
-    return new FlowrouteClient({
+    const client = new SIPClient({
+      pointOfPresence: 'us-west-or',
+      callerId: 'anonymous',
+      displayName: 'anonymous',
+      password: 'nopassword',
+      extraHeaders: [],
+      intervalOfQualityReport: 5000,
       onUserAgentAction: (event: { type: string, payload?: any }) => {
         const status = parseUserAgentStatus(event.type);
         if (!status) {
@@ -79,10 +81,13 @@ export function makeClient() {
         dispatch({ type: 'SET_USER_AGENT_STATUS', status });
       },
     });
+
+    client.run();
+    return client;
   };
 }
 
-export function doCall(params: { client: FlowrouteClient, destiny: string }) {
+export function doCall(params: { client: SIPClient, destiny: string }) {
   return (dispatch: Dispatch<TelephonyAction>) => {
     const did = params.destiny === '0' ? '13125867146' : params.destiny;
     dispatch({ type: 'SET_CALL_STATUS', status: CallStatus.Intending, number: did });
@@ -111,7 +116,7 @@ export interface TelephonyState {
 }
 
 const initialState: TelephonyState = {
-  userAgentStatus: UserAgentStatus.Unregistered,
+  userAgentStatus: UserAgentStatus.Disconnected,
   callStatus: null,
   number: null,
 };

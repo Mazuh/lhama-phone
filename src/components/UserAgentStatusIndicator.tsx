@@ -22,6 +22,7 @@ const uaStatusToIconName = (status: UserAgentStatus): string => {
   switch (status) {
     case UserAgentStatus.Connecting:
     case UserAgentStatus.Disconnected:
+    case UserAgentStatus.TransportError:
       return 'wifi_off';
     case UserAgentStatus.Connected:
       return 'wifi';
@@ -29,7 +30,6 @@ const uaStatusToIconName = (status: UserAgentStatus): string => {
       return 'network_wifi';
     case UserAgentStatus.Unregistered:
     case UserAgentStatus.RegistrationFailed:
-    case UserAgentStatus.RegistrationExpiring:
       return 'wifi_lock';
     default:
       return 'signal_cellular_alt';
@@ -46,8 +46,8 @@ const uaStatusToMessage = (status: UserAgentStatus): string => {
       return UserAgentStatus[status];
     case UserAgentStatus.RegistrationFailed:
       return 'Registration failed';
-    case UserAgentStatus.RegistrationExpiring:
-      return 'Registration expiring';
+    case UserAgentStatus.TransportError:
+      return 'Connection error';
     default:
       return 'Unknown';
   }

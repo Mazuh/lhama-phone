@@ -2,6 +2,8 @@
 import SIPClient from '../sip-client';
 // end of ts ignoreds
 import { Dispatch } from 'react';
+import makeUUID from 'uuid/v4';
+import { HistoryAction, CallDirection } from './history';
 
 export enum UserAgentStatus {
   Connecting = 1,
@@ -88,9 +90,18 @@ export function makeClient() {
 }
 
 export function doCall(params: { client: SIPClient, destiny: string }) {
-  return (dispatch: Dispatch<TelephonyAction>) => {
+  return (dispatch: Dispatch<TelephonyAction|HistoryAction>) => {
     const did = params.destiny === '0' ? '13125867146' : params.destiny;
     dispatch({ type: 'SET_CALL_STATUS', status: CallStatus.Intending, number: did });
+    dispatch({
+      type: 'ADD_CALL_TO_HISTORY',
+      log: {
+        uuid: makeUUID(),
+        startedAt: new Date(),
+        direction: CallDirection.Outbound,
+        number: did,
+      },
+    });
 
     params.client.call({
       to: did,

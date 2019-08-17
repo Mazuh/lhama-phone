@@ -74,7 +74,7 @@ export function makeClient() {
       onUserAgentAction: (event: { type: string, payload?: any }) => {
         const status = parseUserAgentStatus(event.type);
         if (!status) {
-          console.warn('Ignored UA event type:', event.type);
+          console.warn('Ignored UA event:', event.type, event.payload);
           return;
         }
 
@@ -99,7 +99,7 @@ export function doCall(params: { client: SIPClient, destiny: string }) {
         switch (status) {
           case null:
           case CallStatus.Intending:
-            console.warn('Ignored call event type', event.type);
+            console.warn('Ignored call event:', event.type, event.payload);
             return;
           default:
             return dispatch({ type: 'SET_CALL_STATUS', status });

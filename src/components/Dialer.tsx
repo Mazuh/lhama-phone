@@ -37,7 +37,6 @@ const Dialer: React.FunctionComponent<DialerProps> = (props) => {
     && props.telephony!.callStatus !== CallStatus.Failed;
   const canDoCalls = isUserAgentReady && !hasCallInProgress;
 
-  console.log('[Dialer] Rendering.');
   React.useEffect(() => {
     if (!recoveredClient) {
       console.log('[Dialer] Setting new created client, also running it.');

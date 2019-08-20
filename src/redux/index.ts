@@ -3,10 +3,12 @@ import { combineReducers, applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import telephony from './telephony';
 import history from './history';
+import preferences from './preferences';
 
 const reducers = combineReducers({
   telephony,
   history,
+  preferences,
 });
 
 const loadPersistedState = () => {

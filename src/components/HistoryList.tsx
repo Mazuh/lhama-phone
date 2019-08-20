@@ -9,7 +9,6 @@ interface HistoryListProps {
 }
 
 const HistoryList: React.FC<HistoryListProps> = (props) => {
-  console.log('logs', props.logs);
   if (!props.logs || !props.logs.length) {
     return (
       <div>

@@ -43,7 +43,7 @@ export default class SIPClient {
   /**
    * Init a SIP.js user agent with some default values and set its callbacks.
    *
-   * @param {object}    params
+   * @param {object?}   params
    * @param {string?}   params.pointOfPresence one of `FR_POINTS_OF_PRESENCE_DOMAINS` keys
    * @param {string?}   params.callerId caller ID for building user agent URI
    * @param {string?}   params.displayName to be used on calls params
@@ -121,7 +121,7 @@ export default class SIPClient {
   /**
    * Connect to the signaling server and register user agent.
    */
-  run() {
+  run() {;
     this.sipUserAgent.start();
   }
 
@@ -129,7 +129,10 @@ export default class SIPClient {
    * Disconnect from signaling server.
    */
   stop() {
-    this.sipUserAgent.stop();
+    this.sipUserAgent.transport.disconnect().then(() => {
+      this.sipUserAgent.stop();
+      this.onUserAgentAction({ type: 'disconnected' });
+    });
   }
 
   /**

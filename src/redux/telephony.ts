@@ -4,6 +4,7 @@ import SIPClient from '../sip-client';
 import { Dispatch } from 'react';
 import makeUUID from 'uuid/v4';
 import { HistoryAction, CallDirection } from './history';
+import { PreferencesState } from './preferences';
 
 export enum UserAgentStatus {
   Connecting = 1,
@@ -41,6 +42,7 @@ export enum CallStatus {
   Accepted,
   Terminated,
   Failed,
+  Cancel,
 }
 
 function parseCallStatus(sipJsSessionEventType: string): CallStatus | null {
@@ -50,6 +52,8 @@ function parseCallStatus(sipJsSessionEventType: string): CallStatus | null {
     case 'terminated':
       return CallStatus.Terminated;
     case 'failed':
+      return CallStatus.Failed;
+    case 'cancel':
       return CallStatus.Failed;
     default:
       return null;
@@ -62,29 +66,29 @@ type TelephonyAction = (
   | { type: 'SET_CALL_STATUS'; status: CallStatus.Accepted }
   | { type: 'SET_CALL_STATUS'; status: CallStatus.Terminated }
   | { type: 'SET_CALL_STATUS'; status: CallStatus.Failed }
+  | { type: 'SET_CALL_STATUS'; status: CallStatus.Cancel }
 );
 
 export function makeClient() {
-  return (dispatch: Dispatch<TelephonyAction>) => {
+  return (dispatch: Dispatch<TelephonyAction>, getState: Function) => {
+    const state = getState();
+    const {
+      server,
+    } = state.preferences as PreferencesState;
     const client = new SIPClient({
-      pointOfPresence: 'us-west-or',
-      callerId: 'anonymous',
-      displayName: 'anonymous',
-      password: 'nopassword',
-      extraHeaders: [],
-      intervalOfQualityReport: 5000,
+      pointOfPresence: server,
       onUserAgentAction: (event: { type: string, payload?: any }) => {
         const status = parseUserAgentStatus(event.type);
         if (!status) {
-          console.warn('Ignored UA event:', event.type, event.payload);
+          console.warn('[Telephony actions] Ignored user agent event:', event);
           return;
         }
 
+        console.log('[Telephony actions] User agent event', event)
         dispatch({ type: 'SET_USER_AGENT_STATUS', status });
       },
     });
 
-    client.run();
     return client;
   };
 }
@@ -110,9 +114,10 @@ export function doCall(params: { client: SIPClient, destiny: string }) {
         switch (status) {
           case null:
           case CallStatus.Intending:
-            console.warn('Ignored call event:', event.type, event.payload);
+            console.warn('[Telephony actions] Ignored call event:', event.type);
             return;
           default:
+            console.log('[Telephony actions] Call event', event);
             return dispatch({ type: 'SET_CALL_STATUS', status });
         }
       },

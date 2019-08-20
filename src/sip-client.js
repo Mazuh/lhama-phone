@@ -46,6 +46,7 @@ export default class SIPClient {
    * @param {object?}   params
    * @param {string?}   params.pointOfPresence one of `FR_POINTS_OF_PRESENCE_DOMAINS` keys
    * @param {string?}   params.callerId caller ID for building user agent URI
+   * @param {string?}   params.callerDomain caller domain for building user agent URI
    * @param {string?}   params.displayName to be used on calls params
    * @param {string?}   params.password to be used on calls params
    * @param {array?}    params.extraHeaders to an array of string passed on the call
@@ -56,6 +57,7 @@ export default class SIPClient {
     this.params = {
       pointOfPresence: 'us-west-or',
       callerId: 'anonymous',
+      callerDomain: 'wss.flowroute.com',
       displayName: 'Flowroute Client Demo',
       password: 'nopassword',
       extraHeaders: [],
@@ -83,7 +85,7 @@ export default class SIPClient {
     ];
     this.setAudioPlayerElement();
     this.sipUserAgent = new UA({
-      uri: `sip:${this.params.callerId}@wss.flowroute.com`,
+      uri: `sip:${this.params.callerId}@${this.params.callerDomain}`,
       transportOptions: { wsServers },
       authorizationUser: this.displayName,
       password: this.params.password,

@@ -74,9 +74,16 @@ export function makeClient() {
     const state = getState();
     const {
       server,
+      host,
+      user,
+      password,
     } = state.preferences as PreferencesState;
     const client = new SIPClient({
       pointOfPresence: server,
+      callerId: user,
+      callerDomain: host,
+      displayName: 'Lhama Phone user',
+      password,
       onUserAgentAction: (event: { type: string, payload?: any }) => {
         const status = parseUserAgentStatus(event.type);
         if (!status) {

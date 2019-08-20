@@ -21,7 +21,6 @@ const MainPage: React.FunctionComponent = () => {
             </div>
           </div>
           <Container>
-            <strong>Logs:</strong>
             <HistoryList/>
           </Container>
         </Tab>

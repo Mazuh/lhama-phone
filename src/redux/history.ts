@@ -12,7 +12,12 @@ export type CallLog = {
 
 export type HistoryAction = (
   | { type: 'ADD_CALL_TO_HISTORY', log: CallLog }
+  | { type: 'CLEAR_CALL_HISTORY' }
 )
+
+export function clearCallHistory(): HistoryAction {
+  return { type: 'CLEAR_CALL_HISTORY' };
+}
 
 export interface HistoryState {
   logs: Array<CallLog>,
@@ -26,6 +31,8 @@ export default function (state = initialState, action: HistoryAction): HistorySt
   switch (action.type) {
     case 'ADD_CALL_TO_HISTORY':
       return { ...state, logs: [ ...state.logs, action.log ] };
+    case 'CLEAR_CALL_HISTORY':
+      return { ...state, logs: initialState.logs };
     default:
       return state;
   }

@@ -16,3 +16,10 @@ code {
 .material-icons.size-24 { font-size: 24px; }
 .material-icons.size-36 { font-size: 36px; }
 .material-icons.size-48 { font-size: 48px; }
+
+/* misc */
+
+.history-list .list-group {
+  height: calc(100vh - 200px);
+  overflow-y: auto;
+}

@@ -39,9 +39,11 @@ const store = createStore(reducers, loadPersistedState(), applyMiddleware(thunk)
 store.subscribe(() => {
   const {
     history,
+    preferences,
   } = store.getState();
   const serialized = JSON.stringify({
     history,
+    preferences,
   });
 
   localStorage.setItem('redux-state', serialized);

@@ -23,11 +23,8 @@ const FlowroutePreferences: React.FC<FlowroutePreferencesProps> = (props) => {
 
   return (
     <Form>
-      <p>
-        <strong>Flowroute</strong> exclusive preferences.
-      </p>
       <label>
-        <span>Point of presence:</span>
+        <span>Flowroute point of presence:</span>
         <FlowroutePointOfPresenceDropdown onSelect={onPoPSelect}>
           {props.preferences!.server}
         </FlowroutePointOfPresenceDropdown>

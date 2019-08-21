@@ -25,7 +25,7 @@ const MainPage: React.FunctionComponent = () => {
           </Container>
         </Tab>
         <Tab text="Preferences">
-          <Container>
+          <Container className="main-tab-panel">
             <Preferences />
           </Container>
         </Tab>

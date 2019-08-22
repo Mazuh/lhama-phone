@@ -1,7 +1,5 @@
 import React from 'react';
-// @ts-ignore
 import { Tab, TabBar } from 'react-smart-tabs';
-// end of ts ignored
 import Container from 'react-bootstrap/Container';
 import Dialer from './Dialer';
 import UserAgentStatusIndicator from './UserAgentStatusIndicator';

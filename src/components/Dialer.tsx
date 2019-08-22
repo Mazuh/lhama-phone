@@ -17,7 +17,7 @@ import {
   CallStatus,
 } from '../redux/telephony';
 import { PreferencesState } from '../redux/preferences';
-import usePrevious from './hooks/usePrevious';
+import usePrevious from '../hooks/usePrevious';
 
 interface DialerProps {
   telephony?: TelephonyState;

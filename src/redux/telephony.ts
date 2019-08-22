@@ -4,7 +4,7 @@ import SIPClient from '../sip-client';
 import { Dispatch } from 'react';
 import makeUUID from 'uuid/v4';
 import { HistoryAction, CallDirection } from './history';
-import { PreferencesState } from './preferences';
+import { PreferencesState, PreferencesMode } from './preferences';
 
 export enum UserAgentStatus {
   Connecting = 1,
@@ -77,9 +77,11 @@ export function makeClient() {
       host,
       user,
       password,
+      mode,
     } = state.preferences as PreferencesState;
     const client = new SIPClient({
-      pointOfPresence: server,
+      pointOfPresence: mode === PreferencesMode.Flowroute && server,
+      webSocket: mode !== PreferencesMode.Flowroute && server,
       callerId: user,
       callerDomain: host,
       displayName: 'Lhama Phone user',

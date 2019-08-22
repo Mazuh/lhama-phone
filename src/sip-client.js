@@ -45,6 +45,7 @@ export default class SIPClient {
    *
    * @param {object?}   params
    * @param {string?}   params.pointOfPresence one of `FR_POINTS_OF_PRESENCE_DOMAINS` keys
+   * @param {string?}   params.webSocket alternative server URL (do not use this along with `pointOfPresence`)
    * @param {string?}   params.callerId caller ID for building user agent URI
    * @param {string?}   params.callerDomain caller domain for building user agent URI
    * @param {string?}   params.displayName to be used on calls params
@@ -55,7 +56,8 @@ export default class SIPClient {
    */
   constructor(params = {}) {
     this.params = {
-      pointOfPresence: 'us-west-or',
+      pointOfPresence: params.pointOfPresence || undefined,
+      webSocket: undefined,
       callerId: 'anonymous',
       callerDomain: 'wss.flowroute.com',
       displayName: 'Flowroute Client Demo',
@@ -66,23 +68,32 @@ export default class SIPClient {
       ...params,
     };
 
+    if (this.params.pointOfPresence) {
+      if (this.params.webSocket) {
+        throw new Error('Do not mix webSocket and pointOfPresence params, pick only one of them.');
+      }
+
+      if (!FR_POINTS_OF_PRESENCE_DOMAINS[this.params.pointOfPresence]) {
+        throw new Error('Invalid point of presence');
+      }
+    }
+
     this.isMicMuted = false;
     this.outputVolume = 1;
     this.isRegistered = false;
     this.onCallAction = () => {};
     this.onUserAgentAction = this.params.onUserAgentAction;
 
-    const urls = FR_POINTS_OF_PRESENCE_DOMAINS[this.params.pointOfPresence];
-    const wsServers = [
+    const wsServers = this.params.pointOfPresence ? [
       {
-        wsUri: `wss://${urls[0]}:4443`,
+        wsUri: `wss://${FR_POINTS_OF_PRESENCE_DOMAINS[this.params.pointOfPresence][0]}:4443`,
         weight: 20,
       },
       {
-        wsUri: `wss://${urls[1]}:4443`,
+        wsUri: `wss://${FR_POINTS_OF_PRESENCE_DOMAINS[this.params.pointOfPresence][1]}:4443`,
         weight: 10,
       },
-    ];
+    ] : this.params.webSocket;
     this.setAudioPlayerElement();
     this.sipUserAgent = new UA({
       uri: `sip:${this.params.callerId}@${this.params.callerDomain}`,

@@ -2,6 +2,10 @@ import React from 'react';
 import { bindActionCreators, AnyAction, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import Form from 'react-bootstrap/Form';
+import { History } from 'history';
+import { withRouter } from 'react-router';
+import MaterialIcon from '@material/react-material-icon';
+import Button from 'react-bootstrap/Button';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup'
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import ToggleButton from 'react-bootstrap/ToggleButton';
@@ -16,6 +20,7 @@ import {
 import { handleForEventValue } from '../utils/form-control';
 
 interface PreferencesProps {
+  history: History;
   preferences?: PreferencesState;
   setAuthorization?: (user: string, host: string, password: string) => void,
   setPreferencesMode?: (mode: PreferencesMode) => void,
@@ -66,7 +71,7 @@ const Preferences: React.FC<PreferencesProps> = (props) => {
             Custom
           </ToggleButton>
         </ToggleButtonGroup>
-    </ButtonToolbar>
+      </ButtonToolbar>
       {props.preferences!.mode === PreferencesMode.Flowroute && <FlowroutePreferences />}
       {props.preferences!.mode === PreferencesMode.Custom && <CustomPreferences />}
       <Form>
@@ -106,6 +111,15 @@ const Preferences: React.FC<PreferencesProps> = (props) => {
           />
         </Form.Label>
       </Form>
+      <Button
+        variant="warning"
+        className="d-flex align-items-center ml-auto"
+        title="Go back to profile selector"
+        onClick={() => props.history.push('/')}
+      >
+        <MaterialIcon icon="exit_to_app" className="mr-1" />
+        <span>Change profile</span>
+      </Button>
     </div>
   );
 };
@@ -121,4 +135,4 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
   }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Preferences);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Preferences));

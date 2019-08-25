@@ -27,9 +27,8 @@ const getCallIconName = (status: CallStatus|null): string => {
     case CallStatus.Failed:
       return 'smartphone_erase';
     case CallStatus.Terminated:
-      return 'smartphone';
     default:
-      return 'phonelink_locked';
+      return 'smartphone';
   }
 }
 

@@ -51,7 +51,7 @@ const Dialer: React.FunctionComponent<DialerProps> = (props) => {
     }
 
     console.log('[Dialer] Preferences changes detected. Stopping current recovered client.');
-    recoveredClient.stop();
+    recoveredClient.stop({ eraseUserAgentCallbacks: true });
 
     console.log('[Dialer] Creating an updated client.');
     const updatedClient = props.makeClient!();
@@ -65,7 +65,7 @@ const Dialer: React.FunctionComponent<DialerProps> = (props) => {
     }
 
     console.log('[Dialer] Cleaning up: stopping recovered client.');
-    recoveredClient.stop();
+    recoveredClient.stop({ eraseUserAgentCallbacks: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

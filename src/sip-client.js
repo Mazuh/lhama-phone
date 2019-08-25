@@ -140,8 +140,16 @@ export default class SIPClient {
 
   /**
    * Disconnect from signaling server.
+   *
+   * @param {object?}  params
+   * @param {boolean?} params.eraseUserAgentCallbacks;
    */
-  stop() {
+  stop(params = {}) {
+    if (params.eraseUserAgentCallbacks) {
+      this.onUserAgentAction({ type: 'disconnected' });
+      this.onUserAgentAction = () => {};
+    }
+
     this.sipUserAgent.transport.disconnect().then(() => {
       this.sipUserAgent.stop();
       this.onUserAgentAction({ type: 'disconnected' });

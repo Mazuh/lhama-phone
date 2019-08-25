@@ -151,7 +151,14 @@ export default function (state = initialState, action: TelephonyAction): Telepho
     case 'SET_USER_AGENT_STATUS':
       return { ...state, userAgentStatus: action.status };
     case 'SET_CALL_STATUS':
-      return { ...state, callStatus: action.status };
+      return action.status === CallStatus.Intending ? {
+        ...state,
+        callStatus: action.status,
+        number: action.number,
+      } : {
+        ...state,
+        callStatus: action.status,
+      };
     default:
       return state;
   }

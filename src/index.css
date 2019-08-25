@@ -12,12 +12,16 @@ code {
     monospace;
 }
 
-.material-icons.size-18 { font-size: 18px; }
-.material-icons.size-24 { font-size: 24px; }
-.material-icons.size-36 { font-size: 36px; }
-.material-icons.size-48 { font-size: 48px; }
+.material-icons.size-18 { width: 18px; font-size: 18px; }
+.material-icons.size-24 { width: 24px; font-size: 24px; }
+.material-icons.size-36 { width: 36px; font-size: 36px; }
+.material-icons.size-48 { width: 48px; font-size: 48px; }
 
 /* misc */
+
+.bar__wrapper {
+  height: 55px;
+}
 
 .history-list .list-group {
   height: calc(100vh - 200px);

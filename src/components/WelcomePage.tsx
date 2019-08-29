@@ -2,13 +2,14 @@ import React from 'react';
 import { Dispatch, AnyAction, bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { History } from 'history';
-import { withRouter } from 'react-router';
+import { withRouter, Redirect } from 'react-router';
 import MaterialIcon from '@material/react-material-icon';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { retrieveProfileList, retrieveProfileContent, storeProfileList } from '../utils/profiles';
+import { persistLogin, retrieveIsLoggedIn } from '../utils/login-session';
 import { persistCurrentPreferences } from '../redux';
 import { setPreferencesName, setPreferences, DEFAULT_PROFILE_NAME } from '../redux/preferences';
 import { setCallHistory } from '../redux/history';
@@ -51,6 +52,7 @@ const WelcomePage: React.FunctionComponent<WelcomePageProps> = (props) => {
       props.setPreferencesName!(profile);
     }
 
+    persistLogin();
     props.history.push('/main');
   };
 
@@ -74,6 +76,12 @@ const WelcomePage: React.FunctionComponent<WelcomePageProps> = (props) => {
     storeProfileList(updatedProfiles);
     selectProfileFn(newProfileName)();
   };
+
+  if (retrieveIsLoggedIn()) {
+    return (
+      <Redirect to="/main" />
+    );
+  }
 
   return (
     <div>

@@ -18,6 +18,7 @@ import {
   setAuthorization,
 } from '../redux/preferences';
 import { handleForEventValue } from '../utils/form-control';
+import { persistLogout } from '../utils/login-session';
 
 interface PreferencesProps {
   history: History;
@@ -51,6 +52,11 @@ const Preferences: React.FC<PreferencesProps> = (props) => {
       window.clearTimeout(updateStoreTimer);
     };
   }, [user, host, password, props.preferences, props.setAuthorization, setSaving]);
+
+  const goToProfileSelection = () => {
+    persistLogout();
+    props.history.push('/');
+  }
 
   return (
     <div>
@@ -115,7 +121,7 @@ const Preferences: React.FC<PreferencesProps> = (props) => {
         variant="warning"
         className="d-flex align-items-center ml-auto"
         title="Go back to profile selector"
-        onClick={() => props.history.push('/')}
+        onClick={goToProfileSelection}
       >
         <MaterialIcon icon="exit_to_app" className="mr-1" />
         <span>Change profile</span>

@@ -29,7 +29,7 @@ export function retrieveProfileList(): Array<string> {
 }
 
 export function storeProfileList(profiles: Array<string>): void {
-  console.log('[profiles] Storing list from', profilesStorageKey);  
+  console.log('[profiles] Storing list at', profilesStorageKey);
   const serialized = JSON.stringify(profiles);
   localStorage.setItem(profilesStorageKey, serialized);
 }
@@ -67,4 +67,15 @@ export function storeProfileContent(content: ProfileContent): void {
 
   const serialized = JSON.stringify(content);
   localStorage.setItem(storageKey, serialized);
+}
+
+export function purgePersistedProfile(profile: string): void {
+  const profiles = retrieveProfileList();
+  const updatedProfiles = profiles.filter(it => it !== profile);
+  console.log('[profiles] About to store updated list without', profile);
+  storeProfileList(updatedProfiles);
+
+  const storageKey = getStorageKey(profile);
+  console.log('[profiles] Removing profile at', storageKey);
+  localStorage.removeItem(storageKey);
 }

@@ -14,11 +14,13 @@ import CustomPreferences from './CustomPreferences';
 import {
   PreferencesState,
   PreferencesMode,
+  DEFAULT_PROFILE_NAME,
   setPreferencesMode,
   setAuthorization,
 } from '../redux/preferences';
 import { handleForEventValue } from '../utils/form-control';
 import { persistLogout } from '../utils/login-session';
+import { purgePersistedProfile } from '../utils/profiles';
 
 interface PreferencesProps {
   history: History;
@@ -58,8 +60,27 @@ const Preferences: React.FC<PreferencesProps> = (props) => {
     props.history.push('/');
   }
 
+  const deleteProfile = () => {
+    if (!window.confirm(`Permanently DELETE your "${props.preferences!.name}" profile?`)) {
+      return;
+    }
+
+    purgePersistedProfile(props.preferences!.name);
+    window.alert(`Purged "${props.preferences!.name}" profile.`);
+    goToProfileSelection();
+  }
+
   return (
     <div>
+      <p>
+        Preferences for <strong>{props.preferences!.name}</strong>.
+        {props.preferences!.name === DEFAULT_PROFILE_NAME && (
+          <React.Fragment>
+            <br/>
+            <em>Messing up with the default profile is not so cool. Create a new one for you!</em>
+          </React.Fragment>
+        )}
+      </p>
       <span>
         Mode:
       </span>
@@ -124,8 +145,19 @@ const Preferences: React.FC<PreferencesProps> = (props) => {
         onClick={goToProfileSelection}
       >
         <MaterialIcon icon="exit_to_app" className="mr-1" />
-        <span>Change profile</span>
+        <span>Back to profile selection</span>
       </Button>
+      {props.preferences!.name !== DEFAULT_PROFILE_NAME && (
+        <Button
+          variant="danger"
+          className="d-flex align-items-center ml-auto mt-1"
+          title="Permanently delete this profile"
+          onClick={deleteProfile}
+        >
+          <MaterialIcon icon="delete_forever" className="mr-1" />
+          <span>Delete</span>
+        </Button>
+      )}
     </div>
   );
 };

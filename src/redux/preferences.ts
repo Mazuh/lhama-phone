@@ -1,3 +1,5 @@
+export const DEFAULT_PROFILE_NAME = 'Default';
+
 export type FlowroutePointOfPresence = (
   | 'us-east-nj'
   | 'us-west-or'
@@ -13,10 +15,20 @@ export enum PreferencesMode {
 }
 
 export type PreferencesAction = (
+  | { type: 'SET_PREFERENCES', preferences: PreferencesState }
+  | { type: 'SET_PREFERENCES_NAME', name: string }
   | { type: 'SET_PREFERENCES_MODE', mode: PreferencesMode }
   | { type: 'SET_PREFERENCES_SERVER', server: FlowroutePointOfPresence|string }
   | { type: 'SET_AUTH_PREFERENCES', user: string, host: string, password: string }
 )
+
+export function setPreferences(preferences: PreferencesState): PreferencesAction {
+  return { type: 'SET_PREFERENCES', preferences };
+}
+
+export function setPreferencesName(name: string): PreferencesAction {
+  return { type: 'SET_PREFERENCES_NAME', name };
+}
 
 export function setPreferencesMode(mode: PreferencesMode): PreferencesAction {
   return { type: 'SET_PREFERENCES_MODE', mode };
@@ -36,6 +48,7 @@ export function setAuthorization(user: string, host: string, password: string): 
 }
 
 export interface PreferencesState {
+  name: string,
   mode: PreferencesMode,
   server: FlowroutePointOfPresence|string,
   user: string,
@@ -44,6 +57,7 @@ export interface PreferencesState {
 }
 
 const initialState: PreferencesState = {
+  name: DEFAULT_PROFILE_NAME,
   mode: PreferencesMode.Flowroute,
   server: 'us-west-or',
   user: 'anonymous',
@@ -53,6 +67,10 @@ const initialState: PreferencesState = {
 
 export default function (state = initialState, action: PreferencesAction): PreferencesState {
   switch (action.type) {
+    case 'SET_PREFERENCES':
+      return { ...state, ...action.preferences };
+    case 'SET_PREFERENCES_NAME':
+      return { ...state, name: action.name };
     case 'SET_PREFERENCES_SERVER':
       return { ...state, server: action.server };
     case 'SET_AUTH_PREFERENCES':

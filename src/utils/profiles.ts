@@ -1,6 +1,6 @@
 import reduce from 'lodash.reduce';
 import { HistoryState } from "../redux/history";
-import { PreferencesState, DEFAULT_PROFILE_NAME } from "../redux/preferences";
+import { PreferencesState } from "../redux/preferences";
 
 const profilesStorageKey = 'profiles';
 
@@ -17,12 +17,12 @@ export function retrieveProfileList(): Array<string> {
   console.log('[profiles] Retrieving list from', profilesStorageKey);  
   const serialized = localStorage.getItem(profilesStorageKey);
   if (!serialized) {
-    return [DEFAULT_PROFILE_NAME];
+    return [];
   }
 
   const parsed = JSON.parse(serialized);
   if (!Array.isArray(parsed) || !parsed.length) {
-    return [DEFAULT_PROFILE_NAME];
+    return [];
   }
 
   return parsed;

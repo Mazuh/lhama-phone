@@ -13,7 +13,7 @@ const reducers = combineReducers({
 
 const store = createStore(reducers, applyMiddleware(thunk));
 
-store.subscribe(() => {
+export const persistCurrentPreferences = () => {
   const {
     history,
     preferences,
@@ -22,7 +22,9 @@ store.subscribe(() => {
     history,
     preferences,
   } as ProfileContent);
-});
+};
+
+store.subscribe(persistCurrentPreferences);
 
 export default store;
 

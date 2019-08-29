@@ -28,6 +28,12 @@ code {
   overflow-y: auto;
 }
 
+.profiles-list-group {
+  height: calc(100vh - 230px);
+  overflow-x: hidden;
+  overflow-y: auto
+}
+
 .main-tab-panel {
   height: calc(100vh - 60px);
   overflow-y: auto;

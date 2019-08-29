@@ -104,7 +104,7 @@ const WelcomePage: React.FunctionComponent<WelcomePageProps> = (props) => {
             {profiles.map((profile) => (
               <ListGroup.Item
                 key={profile}
-                className="d-flex align-items-center p-1"
+                className="d-flex align-items-center p-1 profiles-list-group__item"
                 as="button"
                 onClick={selectProfileFn(profile)}
               >

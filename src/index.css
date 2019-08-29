@@ -34,6 +34,10 @@ code {
   overflow-y: auto
 }
 
+.profiles-list-group__item:hover {
+  color: blue;
+}
+
 .main-tab-panel {
   height: calc(100vh - 60px);
   overflow-y: auto;

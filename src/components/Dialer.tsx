@@ -6,12 +6,10 @@ import Button from 'react-bootstrap/Button';
 import { FormControlProps } from 'react-bootstrap/FormControl';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch, AnyAction } from 'redux';
-// @ts-ignore
-import SIPClient from '../sip-client';
-// end of ts ignoreds
 import {
   TelephonyState,
-  makeClient,
+  initClient,
+  clearClient,
   doCall,
   UserAgentStatus,
   CallStatus,
@@ -22,12 +20,12 @@ import usePrevious from '../hooks/usePrevious';
 interface DialerProps {
   telephony?: TelephonyState;
   preferences?: PreferencesState,
-  makeClient?(): SIPClient;
-  doCall?(client: any): void;
+  initClient?(): void;
+  clearClient?(): void;
+  doCall?(params: { destiny: string }): void;
 };
 
 const Dialer: React.FunctionComponent<DialerProps> = (props) => {
-  const [recoveredClient, setClient] = React.useState();
   const [state, setState] = React.useState({ number: '' });
   const previousPreferences = usePrevious(props.preferences);
 
@@ -38,11 +36,9 @@ const Dialer: React.FunctionComponent<DialerProps> = (props) => {
   const canDoCalls = isUserAgentReady && !hasCallInProgress;
 
   React.useEffect(() => {
-    if (!recoveredClient) {
-      console.log('[Dialer] Setting new created client, also running it.');
-      const newClient = props.makeClient!();
-      newClient.run();
-      setClient(newClient);
+    if (!props.telephony!.client) {
+      console.log('[Dialer] Initializing new client');
+      props.initClient!();
       return;
     }
 
@@ -50,24 +46,14 @@ const Dialer: React.FunctionComponent<DialerProps> = (props) => {
       return;
     }
 
-    console.log('[Dialer] Preferences changes detected. Stopping current recovered client.');
-    recoveredClient.stop({ eraseUserAgentCallbacks: true });
-
-    console.log('[Dialer] Creating an updated client.');
-    const updatedClient = props.makeClient!();
-    setClient(updatedClient);
-    updatedClient.run();
-  }, [recoveredClient, props.makeClient, props.preferences, previousPreferences]);
+    console.log('[Dialer] Preferences changes detected. Initializing client again.');
+    props.initClient!();
+  }, [props.telephony, props.initClient, props.preferences, previousPreferences]);
 
   React.useEffect(() => () => {
-    if (!recoveredClient) {
-      return;
-    }
-
-    console.log('[Dialer] Cleaning up: stopping recovered client.');
-    recoveredClient.stop({ eraseUserAgentCallbacks: true });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    console.log('[Dialer] Cleaning up: stopping client.');
+    props.clearClient!();
+  }, [props.clearClient]);
 
   const handleNumberInputChange = (event: React.FormEvent<FormControlProps>) => {
     const target = event.target as HTMLInputElement;
@@ -76,20 +62,16 @@ const Dialer: React.FunctionComponent<DialerProps> = (props) => {
 
   const onSubmit = (event: React.SyntheticEvent) => {
     event.preventDefault();
-    if (!recoveredClient || !state.number || !canDoCalls) {
+    if (!props.telephony!.client || !state.number || !canDoCalls) {
       return;
     }
 
-    props.doCall!({ client: recoveredClient as SIPClient, destiny: state.number });
+    props.doCall!({ destiny: state.number });
+    setState({ number: '' });
   };
 
   const hangup = () => {
-    if (recoveredClient === null) {
-      return;
-    }
-
-    (recoveredClient as SIPClient).hangup();
-    setState({ number: '' });
+    props.telephony!.client!.hangup();
   }
 
   return (
@@ -137,8 +119,9 @@ const mapStateToProps = ({ telephony, preferences }: any): any => {
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
   return bindActionCreators({
+    initClient,
+    clearClient,
     doCall,
-    makeClient,
   }, dispatch);
 }
 

@@ -308,6 +308,16 @@ export default class SIPClient {
   }
 
   /**
+   * Set media player mute.
+   *
+   * @param {boolean} isMuted to set player to muted
+   */
+  setPlayerMuted(isMuted) {
+    this.audioPlayerElement.muted = isMuted;
+    this.onCallAction({ type: isMuted ? 'player-muted' : 'player-unmuted' });
+  }
+
+  /**
    * Get audio player volume.
    *
    * @return {number} between 0 and 100

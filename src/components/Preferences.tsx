@@ -72,7 +72,7 @@ const Preferences: React.FC<PreferencesProps> = (props) => {
 
   return (
     <div>
-      <p>
+      <p className="mt-1">
         Preferences for <strong>{props.preferences!.name}</strong>.
         {props.preferences!.name === DEFAULT_PROFILE_NAME && (
           <React.Fragment>

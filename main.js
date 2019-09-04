@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, systemPreferences, BrowserWindow } = require('electron');
 
 let mainWindow;
 
@@ -17,6 +17,14 @@ const createWindow = () => {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
+
+  if (systemPreferences && systemPreferences.askForMediaAccess) {
+    systemPreferences.askForMediaAccess('microphone').then(() => {
+      console.log('Successfully gathered media access permissions.');
+    }).catch(() => {
+      window.alert('Media access permissions are requested.');
+    });
+  }
 }
 
 app.on('ready', createWindow);

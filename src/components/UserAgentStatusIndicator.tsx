@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import findKey from 'lodash.findkey';
 import MaterialIcon from '@material/react-material-icon';
 import { UserAgentStatus } from '../redux/telephony';
 
@@ -43,7 +44,7 @@ const uaStatusToMessage = (status: UserAgentStatus): string => {
     case UserAgentStatus.Connected:
     case UserAgentStatus.Registered:
     case UserAgentStatus.Unregistered:
-      return UserAgentStatus[status];
+      return findKey(UserAgentStatus, (it: UserAgentStatus) => it === status) as string;
     case UserAgentStatus.RegistrationFailed:
       return 'Registration failed';
     case UserAgentStatus.TransportError:

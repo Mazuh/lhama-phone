@@ -3,11 +3,17 @@ export enum CallDirection {
   Outbound,
 }
 
+export enum CallOutcome {
+  Completed = 1,
+  Missed,
+}
+
 export type CallLog = {
   uuid: string;
   startedAt: Date;
   direction: CallDirection;
   number: string;
+  outcome: CallOutcome;
 }
 
 export type HistoryAction = (
@@ -37,7 +43,7 @@ export default function (state = initialState, action: HistoryAction): HistorySt
     case 'SET_HISTORY':
       return { ...state, ...action.history };
     case 'ADD_CALL_TO_HISTORY':
-      return { ...state, logs: [ ...state.logs, action.log ] };
+      return { ...state, logs: [ action.log, ...state.logs ] };
     case 'CLEAR_CALL_HISTORY':
       return { ...state, logs: initialState.logs };
     default:

@@ -2,13 +2,14 @@ import React from 'react';
 import { AnyAction, bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import {
+  NO_CALL_STATUS_SET,
   TelephonyState,
-  CallStatus,
   setInputMuted,
   setOutputMuted,
   hangup,
 } from '../redux/telephony';
 import IconButton from './dumb/IconButton';
+import IncomingCallPrompt from './IncomingCallPrompt';
 
 interface WorkingCallProps {
   telephony: TelephonyState;
@@ -18,7 +19,11 @@ interface WorkingCallProps {
 }
 
 const WorkingCall: React.FC<WorkingCallProps> = (props) => {
-  if (props.telephony.callStatus !== CallStatus.Accepted) {
+  if (props.telephony.incomingCall) {
+    return <IncomingCallPrompt />;
+  }
+
+  if (NO_CALL_STATUS_SET.includes(props.telephony.callStatus)) {
     return (
       <div className="d-flex flex-column h-100 justify-content-center align-items-center text-center">
         <p>

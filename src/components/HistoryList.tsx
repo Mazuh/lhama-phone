@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { AnyAction, Dispatch, bindActionCreators } from 'redux';
 import MaterialIcon from '@material/react-material-icon';
 import ListGroup from 'react-bootstrap/ListGroup';
-import { CallLog, CallDirection, clearCallHistory } from '../redux/history';
+import { CallLog, CallDirection, clearCallHistory, CallOutcome } from '../redux/history';
 
 interface HistoryListProps {
   logs?: Array<CallLog>,
@@ -29,13 +29,21 @@ const HistoryList: React.FC<HistoryListProps> = (props) => {
       </header>
       {props.logs && props.logs.length ? (
         <ListGroup>
-          {props.logs.map(({ uuid, direction, number, startedAt }) => (
+          {props.logs.map(({ uuid, direction, outcome, number, startedAt }) => (
             <ListGroup.Item key={uuid} className="d-flex align-items-center p-1">
                 {direction === CallDirection.Inbound && (
-                  <MaterialIcon icon="call_received" title="Received (Inbound)" />
+                  outcome === CallOutcome.Completed ? (
+                    <MaterialIcon icon="call_received" title="Received (inbound)" />
+                  ) : (
+                    <MaterialIcon icon="call_missed" title="Received (inbound) but missed" />
+                  )
                 )}
                 {direction === CallDirection.Outbound && (
-                  <MaterialIcon icon="call_made" title="Made (Outbound)" />
+                  outcome === CallOutcome.Completed ? (
+                    <MaterialIcon icon="call_made" title="Made (outbound)" />
+                  ) : (
+                    <MaterialIcon icon="call_missed_outgoing" title="Made (outbound) but missed" />
+                  )
                 )}
                 <span>{number}</span>
                 <small className="ml-1">at {startedAt.toLocaleString()}</small>

@@ -52,6 +52,7 @@ export default class SIPClient {
    * @param {string?}   params.password to be used on calls params
    * @param {array?}    params.extraHeaders to an array of string passed on the call
    * @param {function?} params.onUserAgentAction general callback for UA events and its payloads
+   * @param {function?} params.onCallAction callback for call events and its payloads
    * @param {number?}   params.intervalOfQualityReport in milliseconds
    */
   constructor(params = {}) {
@@ -65,6 +66,7 @@ export default class SIPClient {
       extraHeaders: [],
       intervalOfQualityReport: undefined,
       onUserAgentAction: () => {},
+      onCallAction: () => {},
       ...params,
     };
 
@@ -81,8 +83,9 @@ export default class SIPClient {
     this.isMicMuted = false;
     this.outputVolume = 1;
     this.isRegistered = false;
-    this.onCallAction = () => {};
+    this.isIncomingCallRinging = false;
     this.onUserAgentAction = this.params.onUserAgentAction;
+    this.onCallAction = this.params.onCallAction;
 
     const wsServers = this.params.pointOfPresence ? [
       {
@@ -101,11 +104,6 @@ export default class SIPClient {
       authorizationUser: this.displayName,
       password: this.params.password,
       autostart: false,
-    });
-
-    this.sipUserAgent.on('registered', (payload) => {
-      this.isRegistered = true;
-      this.onUserAgentAction({ type: 'registered', payload });
     });
 
     [
@@ -128,6 +126,42 @@ export default class SIPClient {
       this.sipUserAgent.transport.on(eventType, (payload) => {
         this.onUserAgentAction({ type: eventType, payload });
       });
+    });
+
+    this.sipUserAgent.on('registered', (payload) => {
+      this.isRegistered = true;
+      this.onUserAgentAction({ type: 'registered', payload });
+    });
+
+    this.sipUserAgent.on('invite', (session) => {
+      this.isIncomingCallRinging = true;
+      const callPayload = {
+        displayName: session.remoteIdentity.displayName,
+        callerId: session.remoteIdentity.uri.user,
+        callerDomain: session.remoteIdentity.uri.host,
+      };
+      const accept = () => {
+        this.isIncomingCallRinging = false;
+        session.accept();
+        this.setActiveCall(session);
+      };
+      const reject = () => {
+        this.isIncomingCallRinging = false;
+        session.reject();
+        this.onUserAgentAction({ type: 'misisedCall', payload: callPayload }, session);
+      };
+
+      if (this.activeCall) {
+        reject();
+      } else {
+        const incomingCallPayload = { ...callPayload, accept, reject };
+        this.onUserAgentAction({ type: 'incomingCall', payload: incomingCallPayload }, session);
+
+        session.on('cancel', () => {
+          this.isIncomingCallRinging = false;
+          this.onUserAgentAction({ type: 'misisedCall', payload: callPayload }, session);
+        });
+      }
     });
   }
 
@@ -165,8 +199,6 @@ export default class SIPClient {
   setDID(did) {
     if (typeof did !== 'string') {
       throw new Error('Expected DID to be a string');
-    } else if (did.length !== 11) {
-      throw new Error('Currently only DIDs with 11 length are supported');
     }
 
     this.params = { ...this.params, did };
@@ -179,6 +211,7 @@ export default class SIPClient {
    *
    * @param {object?}        options
    * @param {string?}        options.to number destiny
+   * @param {string?}        options.host destiny domain (if omitted, will copy from user agent)
    * @param {function?}      options.onCallAction callback for call events and its payloads
    * @param {object|string?} options.audioConstraints callback for call events and its payloads
    */
@@ -193,7 +226,8 @@ export default class SIPClient {
 
     const {
       to,
-      onCallAction = () => {},
+      host,
+      onCallAction,
     } = options;
 
     const did = to || this.params.did;
@@ -203,42 +237,21 @@ export default class SIPClient {
       throw new Error('No DID provided');
     }
 
-    this.onCallAction = onCallAction;
+    if (typeof onCallAction === 'function') {
+      this.onCallAction = onCallAction;
+    }
 
-    const session = this.sipUserAgent.invite(`sip:${did}@sip.flowroute.com`, {
+    if (typeof this.onCallAction !== 'function') {
+      this.onCallAction = (() => {});
+    }
+
+    const session = this.sipUserAgent.invite(`sip:${did}@${host || this.params.callerDomain}`, {
       sessionDescriptionHandlerOptions: {
         constraints: { audio: options.audioConstraints || true, video: false },
       },
     });
 
-    [
-      'progress',
-      'accepted',
-      'rejected',
-      'failed',
-      'terminated',
-      'cancel',
-      'reinvite',
-      'referRequested',
-      'replaced',
-      'dtmf',
-      'bye',
-    ].forEach((eventType) => {
-      session.on(eventType, (payload) => {
-        this.onCallAction({ type: eventType, payload });
-      });
-    });
-
-    session.on('trackAdded', () => {
-      this.connectAudio(session);
-    });
-
-    session.on('terminated', () => {
-      this.disconnectAudio();
-      this.activeCall = null;
-    });
-
-    this.activeCall = session;
+    this.setActiveCall(session);
   }
 
   /**
@@ -262,12 +275,12 @@ export default class SIPClient {
    * Hangup current active call and unassign it.
    */
   hangup() {
-    if (!this.activeCall) {
-      throw new Error('There is no active call to hangup');
+    try {
+      this.activeCall.terminate();
+    } catch (err) {
+    } finally {
+      this.activeCall = null;
     }
-
-    this.activeCall.terminate();
-    this.activeCall = null;
   }
 
   /**
@@ -347,6 +360,40 @@ export default class SIPClient {
    */
   getExtraCallHeaders() {
     return this.params.extraHeaders;
+  }
+
+  /**
+   * @private
+   */
+  setActiveCall(session) {
+    [
+      'progress',
+      'accepted',
+      'rejected',
+      'failed',
+      'terminated',
+      'cancel',
+      'reinvite',
+      'referRequested',
+      'replaced',
+      'dtmf',
+      'bye',
+    ].forEach((eventType) => {
+      session.on(eventType, (payload) => {
+        this.onCallAction({ type: eventType, payload });
+      });
+    });
+
+    session.on('trackAdded', () => {
+      this.connectAudio(session);
+    });
+
+    session.on('terminated', () => {
+      this.disconnectAudio();
+      this.activeCall = null;
+    });
+
+    this.activeCall = session;
   }
 
   /**

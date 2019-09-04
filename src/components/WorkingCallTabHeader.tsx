@@ -4,25 +4,30 @@ import MaterialIcon from '@material/react-material-icon';
 import { TelephonyState, CallStatus } from '../redux/telephony';
 
 interface WorkingCallTabHeaderProps {
-  telephony?: TelephonyState;
+  telephony: TelephonyState;
 }
 
 const WorkingCallTabHeader: React.FC<WorkingCallTabHeaderProps> = (props) => {
-  const icon = getCallIconName(props.telephony!.callStatus);
-  const description = getCallDescription(props.telephony!.callStatus);
+  const hasIncomingCall = !!props.telephony.incomingCall;
+  const icon = getCallIconName(props.telephony.callStatus, hasIncomingCall);
+  const description = getCallDescription(props.telephony.callStatus, hasIncomingCall);
   return (
-    <div className="d-flex text-align-center">
+    <div className={`d-flex text-align-center${hasIncomingCall ? ' text-warning' : ''}`}>
       <MaterialIcon icon={icon} className="size-18 mr-1" />
       <span>{description}</span>
     </div>
   );
 };
 
-const getCallIconName = (status: CallStatus|null): string => {
+const getCallIconName = (status: CallStatus|null, hasIncomingCall: boolean): string => {
+  if (hasIncomingCall) {
+    return 'phonelink_ring';
+  }
+
   switch (status) {
     case CallStatus.Intending:
     case CallStatus.Accepted:
-      return 'phone';
+      return 'call';
     case CallStatus.Cancel:
     case CallStatus.Failed:
       return 'smartphone_erase';
@@ -32,7 +37,11 @@ const getCallIconName = (status: CallStatus|null): string => {
   }
 }
 
-const getCallDescription = (status: CallStatus|null): string => {
+const getCallDescription = (status: CallStatus|null, hasIncomingCall: boolean): string => {
+  if (hasIncomingCall) {
+    return 'Incoming call';
+  }
+
   switch (status) {
     case CallStatus.Intending:
       return 'Calling';

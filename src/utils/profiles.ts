@@ -1,12 +1,14 @@
 import reduce from 'lodash.reduce';
 import { HistoryState } from "../redux/history";
 import { PreferencesState } from "../redux/preferences";
+import { ContactsState } from '../redux/contacts';
 
 const profilesStorageKey = 'profiles';
 
 export interface ProfileContent {
   history: HistoryState;
   preferences: PreferencesState;
+  contacts: ContactsState;
 }
 
 function getStorageKey(profile: string): string {

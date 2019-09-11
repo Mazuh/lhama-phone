@@ -7,6 +7,7 @@ import MakeCall from './MakeCall';
 import Preferences from './Preferences';
 import WorkingCall from './WorkingCall';
 import WorkingCallTabHeader from './WorkingCallTabHeader';
+import ContactsView from './ContactsView';
 
 const MainPage: React.FunctionComponent = () => {
   if (!retrieveIsLoggedIn()) {
@@ -20,15 +21,18 @@ const MainPage: React.FunctionComponent = () => {
       <Tab text="Make call">
         <MakeCall />
       </Tab>
+      <Tab tabHeader={<WorkingCallTabHeader />}>
+        <Container className="main-tab-panel">
+          <WorkingCall />
+        </Container>
+      </Tab>
       <Tab text="Preferences">
         <Container className="main-tab-panel">
           <Preferences />
         </Container>
       </Tab>
-      <Tab tabHeader={<WorkingCallTabHeader />}>
-        <Container className="main-tab-panel">
-          <WorkingCall />
-        </Container>
+      <Tab text="Contacts">
+        <ContactsView />
       </Tab>
     </TabBar>
   );

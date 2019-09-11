@@ -15,15 +15,15 @@ export enum PreferencesMode {
 }
 
 export type PreferencesAction = (
-  | { type: 'SET_PREFERENCES', preferences: PreferencesState }
+  | { type: 'SET_PREFERENCES', state: PreferencesState }
   | { type: 'SET_PREFERENCES_NAME', name: string }
   | { type: 'SET_PREFERENCES_MODE', mode: PreferencesMode }
   | { type: 'SET_PREFERENCES_SERVER', server: FlowroutePointOfPresence|string }
   | { type: 'SET_AUTH_PREFERENCES', user: string, host: string, password: string }
 )
 
-export function setPreferences(preferences: PreferencesState): PreferencesAction {
-  return { type: 'SET_PREFERENCES', preferences };
+export function setPreferences(state: PreferencesState): PreferencesAction {
+  return { type: 'SET_PREFERENCES', state };
 }
 
 export function setPreferencesName(name: string): PreferencesAction {
@@ -68,7 +68,7 @@ const initialState: PreferencesState = {
 export default function (state = initialState, action: PreferencesAction): PreferencesState {
   switch (action.type) {
     case 'SET_PREFERENCES':
-      return { ...state, ...action.preferences };
+      return { ...state, ...action.state };
     case 'SET_PREFERENCES_NAME':
       return { ...state, name: action.name };
     case 'SET_PREFERENCES_SERVER':

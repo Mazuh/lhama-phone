@@ -12,12 +12,14 @@ import { retrieveProfileList, retrieveProfileContent, storeProfileList } from '.
 import { persistLogin, retrieveIsLoggedIn } from '../utils/login-session';
 import { persistCurrentPreferences } from '../redux';
 import { setPreferencesName, setPreferences, DEFAULT_PROFILE_NAME } from '../redux/preferences';
-import { setCallHistory } from '../redux/history';
+import { setHistory } from '../redux/history';
+import { setContacts } from '../redux/contacts';
 
 interface WelcomePageProps {
   history: History;
-  setCallHistory?: Function;
+  setHistory?: Function;
   setPreferences?: Function;
+  setContacts?: Function;
   setPreferencesName?: Function;
 }
 
@@ -47,7 +49,8 @@ const WelcomePage: React.FunctionComponent<WelcomePageProps> = (props) => {
     const profileContent = retrieveProfileContent(profile);
     if (profileContent) {
       props.setPreferences!(profileContent.preferences);
-      props.setCallHistory!(profileContent.history);
+      props.setHistory!(profileContent.history);
+      props.setContacts!(profileContent.contacts);
     } else {
       props.setPreferencesName!(profile);
     }
@@ -144,9 +147,10 @@ const WelcomePage: React.FunctionComponent<WelcomePageProps> = (props) => {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => bindActionCreators({
-  setCallHistory,
+  setHistory,
   setPreferences,
   setPreferencesName,
+  setContacts,
 }, dispatch);
 
 export default connect(null, mapDispatchToProps)(withRouter(WelcomePage));

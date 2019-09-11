@@ -22,6 +22,10 @@ code {
   height: 40px;
 }
 
+.pointer {
+  cursor: pointer !important;
+}
+
 /* misc */
 
 .bar__wrapper {

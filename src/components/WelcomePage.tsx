@@ -1,6 +1,7 @@
 import React from 'react';
 import { Dispatch, AnyAction, bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import uuid from 'uuid';
 import { History } from 'history';
 import { withRouter, Redirect } from 'react-router';
 import MaterialIcon from '@material/react-material-icon';
@@ -8,18 +9,18 @@ import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import ListGroup from 'react-bootstrap/ListGroup';
-import { retrieveProfileList, retrieveProfileContent, storeProfileList } from '../utils/profiles';
+import { retrieveProfileList, retrieveProfileContent, persistProfileList } from '../utils/profiles';
 import { persistLogin, retrieveIsLoggedIn } from '../utils/login-session';
 import { persistCurrentPreferences } from '../redux';
 import { setPreferencesName, setPreferences, DEFAULT_PROFILE_NAME } from '../redux/preferences';
 import { setHistory } from '../redux/history';
-import { setContacts } from '../redux/contacts';
+import { setContacts, ContactsState } from '../redux/contacts';
 
 interface WelcomePageProps {
   history: History;
   setHistory?: Function;
   setPreferences?: Function;
-  setContacts?: Function;
+  setContacts?: (contacts: ContactsState) => void;
   setPreferencesName?: Function;
 }
 
@@ -30,8 +31,14 @@ const WelcomePage: React.FunctionComponent<WelcomePageProps> = (props) => {
     if (retrievingProfiles.length) {
       setProfiles(retrievingProfiles);
     } else {
-      persistCurrentPreferences();
-      storeProfileList([DEFAULT_PROFILE_NAME]);
+      console.warn('No profiles. Trying to create a default one.');
+      persistCurrentPreferences(); // relying on reducers initial state loaded by redux
+      persistProfileList([DEFAULT_PROFILE_NAME]);
+      props.setContacts!({
+        entries: [
+          { uuid: uuid.v4(), name: 'Flowroute Echo Application', phone: '13125867146' },
+        ],
+      });
       setProfiles([DEFAULT_PROFILE_NAME]);
     }
 
@@ -43,7 +50,7 @@ const WelcomePage: React.FunctionComponent<WelcomePageProps> = (props) => {
     return () => {
       clearInterval(profilesUpdater);
     }
-  }, []);
+  }, [props.setContacts]);
 
   const selectProfileFn = (profile: string) => () => {
     const profileContent = retrieveProfileContent(profile);
@@ -76,7 +83,7 @@ const WelcomePage: React.FunctionComponent<WelcomePageProps> = (props) => {
 
     const updatedProfiles = [ ...profiles, newProfileName ];
     setProfiles(updatedProfiles);
-    storeProfileList(updatedProfiles);
+    persistProfileList(updatedProfiles);
     selectProfileFn(newProfileName)();
   };
 
@@ -100,9 +107,16 @@ const WelcomePage: React.FunctionComponent<WelcomePageProps> = (props) => {
           <p>
             Softphone made with <span role="img" aria-label="love">❤️</span> by Mazuh.
           </p>
-          <p>
-            Select your <strong>profile</strong>:
-          </p>
+          {profiles.length ? (
+            <p>
+              Select your <strong>profile</strong>:
+            </p>
+          ) : (
+            <p>
+              Ops! No profiles to select. If you wish, just open the app again and there will
+              be a new default profile with demo data.
+            </p>
+          )}
           <ListGroup className="profiles-list-group">
             {profiles.map((profile) => (
               <ListGroup.Item

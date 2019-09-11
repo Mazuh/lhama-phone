@@ -86,7 +86,9 @@ const ContactsView: React.FC<ContactsViewProps> = (props) => {
               role="button"
               onClick={onClickToEnableOpsFn(contact)}
             >
-              {contact.name} <small>{contact.phone}</small>
+              {contact.name}
+              <br />
+              <small>{contact.phone}</small>
             </span>
             <div
               className={uuidForVisibleOps === contact.uuid ? 'flex-shrink-0 ml-auto' : 'd-none'}

@@ -213,24 +213,23 @@ export function doCall(params: { destiny: string }) {
       return;
     }
 
-    const did = params.destiny === '0' ? '13125867146' : params.destiny;
     dispatch({
       type: 'SET_CALL_STATUS',
       status: CallStatus.Intending,
-      number: did,
+      number: params.destiny,
     });
     dispatch({
       type: 'ADD_CALL_TO_HISTORY',
       log: {
         uuid: makeUUID(),
         startedAt: new Date(),
-        number: did,
+        number: params.destiny,
         direction: CallDirection.Outbound,
         outcome: CallOutcome.Completed,
       },
     });
 
-    client.call({ to: did });
+    client.call({ to: params.destiny });
   };
 }
 

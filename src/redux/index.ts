@@ -1,6 +1,6 @@
 import { combineReducers, applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
-import { ProfileContent, storeProfileContent } from '../utils/profiles';
+import { ProfileContent, persistProfileContent } from '../utils/profiles';
 import telephony from './telephony';
 import history from './history';
 import preferences from './preferences';
@@ -21,7 +21,7 @@ export const persistCurrentPreferences = () => {
     preferences,
     contacts,
   } = store.getState();
-  storeProfileContent({
+  persistProfileContent({
     history,
     preferences,
     contacts

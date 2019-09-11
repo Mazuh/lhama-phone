@@ -16,7 +16,7 @@ function getStorageKey(profile: string): string {
 }
 
 export function retrieveProfileList(): Array<string> {
-  console.log('[profiles] Retrieving list from', profilesStorageKey);  
+  console.log('[profiles] Retrieving list using key', profilesStorageKey);
   const serialized = localStorage.getItem(profilesStorageKey);
   if (!serialized) {
     return [];
@@ -30,15 +30,15 @@ export function retrieveProfileList(): Array<string> {
   return parsed;
 }
 
-export function storeProfileList(profiles: Array<string>): void {
-  console.log('[profiles] Storing list at', profilesStorageKey);
+export function persistProfileList(profiles: Array<string>): void {
+  console.log('[profiles] Storing list at key', profilesStorageKey);
   const serialized = JSON.stringify(profiles);
   localStorage.setItem(profilesStorageKey, serialized);
 }
 
 export function retrieveProfileContent(profile: string): ProfileContent|null {
   const storageKey = getStorageKey(profile); 
-  console.log('[profiles] Retrieving from', storageKey);
+  console.log('[profiles] Retrieving from key', storageKey);
 
   const serialized = localStorage.getItem(storageKey);
   if (!serialized) {
@@ -62,10 +62,10 @@ export function retrieveProfileContent(profile: string): ProfileContent|null {
   return parsedWithDateTypes as ProfileContent;
 }
 
-export function storeProfileContent(content: ProfileContent): void {
+export function persistProfileContent(content: ProfileContent): void {
   const profile = content.preferences.name;
   const storageKey = getStorageKey(profile);
-  console.log('[profiles] Storing at', storageKey);
+  console.log('[profiles] Storing at key', storageKey);
 
   const serialized = JSON.stringify(content);
   localStorage.setItem(storageKey, serialized);
@@ -74,10 +74,10 @@ export function storeProfileContent(content: ProfileContent): void {
 export function purgePersistedProfile(profile: string): void {
   const profiles = retrieveProfileList();
   const updatedProfiles = profiles.filter(it => it !== profile);
-  console.log('[profiles] About to store updated list without', profile);
-  storeProfileList(updatedProfiles);
+  console.log('[profiles] About to persist updated list without profile', profile);
+  persistProfileList(updatedProfiles);
 
   const storageKey = getStorageKey(profile);
-  console.log('[profiles] Removing profile at', storageKey);
+  console.log('[profiles] Removing profile by key', storageKey);
   localStorage.removeItem(storageKey);
 }

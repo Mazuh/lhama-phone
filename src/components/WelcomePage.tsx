@@ -142,6 +142,7 @@ const WelcomePage: React.FunctionComponent<WelcomePageProps> = (props) => {
             id="new-profile"
             placeholder="Create new profile"
             title="Name of the new profile to be created"
+            maxLength={15}
             required
           />
         </Form.Group>

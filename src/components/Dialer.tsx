@@ -84,6 +84,7 @@ const Dialer: React.FunctionComponent<DialerProps> = (props) => {
             onChange={handleNumberInputChange}
             placeholder="Type to call..."
             title="Input an extension or phone number here"
+            maxLength={50}
             readOnly={hasCallInProgress as boolean}
           />
         </Form.Group>

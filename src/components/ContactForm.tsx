@@ -49,6 +49,7 @@ const ContactForm: React.FC<ContactFormProps> = (props) => {
             name="cname"
             defaultValue={props.contact ? props.contact.name : ''}
             placeholder="Contact name or full name"
+            maxLength={30}
             required
           />
         </Form.Label>
@@ -61,6 +62,7 @@ const ContactForm: React.FC<ContactFormProps> = (props) => {
             name="phone"
             defaultValue={props.contact ? props.contact.phone : ''}
             placeholder="Its phone number in any format"
+            maxLength={50}
             required
           />
         </Form.Label>

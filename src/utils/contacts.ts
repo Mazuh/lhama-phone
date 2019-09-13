@@ -5,13 +5,15 @@ const rQuotes = /['"]/g;
 
 const clearPhone = (phone: string): string => phone.replace(rNotAlphaNumeric, '');
 
-export function findByPhone(phone: string, contacts: Array<Contact>): Contact|null {
+export function findByPhone(phone: string,
+                            contacts: Array<Contact>,
+                            forceEqual: boolean = false): Contact|null {
   const clearedSearch = clearPhone(phone);
   if (!clearedSearch) {
     return null;
   }
 
-  const canBeJustSimilar = clearedSearch.length > 6;
+  const canBeJustSimilar = !forceEqual && clearedSearch.length > 6;
   return contacts.find((it) => {
     const clearedTarget = clearPhone(it.phone);
     if (!clearedTarget) {

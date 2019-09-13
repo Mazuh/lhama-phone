@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 import uuid from 'uuid';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { clearToAdd } from '../utils/contacts';
-import { Contact, addContact, editContact } from '../redux/contacts';
+import { clearToAdd, findByPhone } from '../utils/contacts';
+import { Contact, addContact, editContact, ContactsState } from '../redux/contacts';
 
 interface ContactFormProps {
   editing?: boolean;
   contact?: Contact|null;
   onFinish: Function;
+  contacts?: ContactsState;
   addContact: Function;
   editContact: Function;
 }
@@ -20,10 +21,22 @@ const ContactForm: React.FC<ContactFormProps> = (props) => {
     event.preventDefault();
 
     const form = event.target as HTMLFormElement;
+    const name = clearToAdd(form.cname.value);
+    const phone = clearToAdd(form.phone.value);
+    if (!name || !phone) {
+      return;
+    }
+
+    const existingWithEqualPhone = findByPhone(phone, props.contacts!.entries, true);
+    if (existingWithEqualPhone) {
+      alert(`This phone already exists for "${existingWithEqualPhone.name}".`);
+      return;
+    }
+
     const contact: Contact = {
       uuid: (props.contact && props.contact.uuid) || uuid.v4(),
-      name: clearToAdd(form.cname.value),
-      phone: clearToAdd(form.phone.value),
+      name,
+      phone,
     };
 
     if (props.editing) {
@@ -80,9 +93,13 @@ const ContactForm: React.FC<ContactFormProps> = (props) => {
   );
 };
 
+const mapStateToProps = ({ contacts }: any) => ({
+  contacts,
+});
+
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => bindActionCreators({
   addContact,
   editContact,
 }, dispatch);
 
-export default connect(null, mapDispatchToProps)(ContactForm);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactForm);

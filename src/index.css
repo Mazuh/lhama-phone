@@ -22,8 +22,12 @@ code {
   height: 40px;
 }
 
-.pointer {
+.c-pointer {
   cursor: pointer !important;
+}
+
+.c-default {
+  cursor: default !important;
 }
 
 /* misc */

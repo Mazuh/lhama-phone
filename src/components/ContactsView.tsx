@@ -1,6 +1,7 @@
 import React from 'react';
 import { Dispatch, AnyAction, bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import MaterialIcon from '@material/react-material-icon';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { ContactsState, Contact, removeContact } from '../redux/contacts';
 import IconButton from './dumb/IconButton';
@@ -67,25 +68,25 @@ const ContactsView: React.FC<ContactsViewProps> = (props) => {
 
   return (
     <div>
-      <header className="d-flex justify-content-between">
-        <strong>Conacts:</strong>
+      <header>
+        <strong className="mb-1">Conacts:</strong>
+        {props.contacts.entries.length === 0 && (
+          <p>
+            <span className="d-block">No contacts yet.</span>
+            <em className="d-block mt-2">
+              Use that blue <MaterialIcon icon="add" className="size-18" /> button at the bottom to add a new one.
+            </em>
+          </p>
+        )}
       </header>
-      {props.contacts.entries.length === 0 ? (
-        <p className="mt-5 text-center">
-          No contacts yet.
-          <br />
-          <br />
-          Use that button at the bottom to add a new one.
-        </p>
-      ) : (
-        <ListGroup>
+      <ListGroup>
         {props.contacts.entries.map(contact => (
           <ListGroup.Item
             key={contact.uuid}
             className={`d-flex align-items-center ${contactBgClass(contact)}`}
           >
             <span
-              className="flex-grow-1 pointer"
+              className="flex-grow-1 c-pointer"
               role="button"
               onClick={onClickToEnableOpsFn(contact)}
             >
@@ -110,8 +111,7 @@ const ContactsView: React.FC<ContactsViewProps> = (props) => {
             </div>
           </ListGroup.Item>
         ))}
-        </ListGroup>
-      )}
+      </ListGroup>
       {isFormVisible ? (
         <ContactForm
           contact={editing}

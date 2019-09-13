@@ -6,14 +6,19 @@ import { UserAgentStatus } from '../redux/telephony';
 
 interface UserAgentStatusIndicatorProps {
   userAgentStatus?: UserAgentStatus,
+  preferencesName?: string,
 }
 
 const UserAgentStatusIndicator: React.FunctionComponent<UserAgentStatusIndicatorProps> = (props) => {
   return (
-    <div>
-      <span>
-        <MaterialIcon icon={uaStatusToIconName(props.userAgentStatus!)} className="size-18 mr-1" />
-        Status: <strong>{uaStatusToMessage(props.userAgentStatus!)}</strong>
+    <div className="d-flex justify-content-around mb-1 c-default">
+      <span title="Current user agent status" className="d-flex align-items-center">
+        <MaterialIcon icon={uaStatusToIconName(props.userAgentStatus!)} className="mr-1" />
+        {uaStatusToMessage(props.userAgentStatus!)}
+      </span>
+      <span title="Your profile name" className="d-flex align-items-center">
+        <MaterialIcon icon="person_outline" className="mr-1" />
+        {props.preferencesName ? props.preferencesName : '?'}
       </span>
     </div>
   );
@@ -54,9 +59,10 @@ const uaStatusToMessage = (status: UserAgentStatus): string => {
   }
 }
 
-const mapStateToProps = ({ telephony }: any): any => {
+const mapStateToProps = ({ telephony, preferences }: any): any => {
   return {
     userAgentStatus: telephony.userAgentStatus,
+    preferencesName: preferences.name,
   };
 };
 

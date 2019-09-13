@@ -22,14 +22,14 @@ import { handleForEventValue } from '../utils/form-control';
 import { persistLogout } from '../utils/login-session';
 import { purgePersistedProfile } from '../utils/profiles';
 
-interface PreferencesProps {
+interface PreferencesViewProps {
   history: History;
   preferences?: PreferencesState;
   setAuthorization?: (user: string, host: string, password: string) => void,
   setPreferencesMode?: (mode: PreferencesMode) => void,
 }
 
-const Preferences: React.FC<PreferencesProps> = (props) => {
+const PreferencesView: React.FC<PreferencesViewProps> = (props) => {
   const [isSaving, setSaving] = React.useState(false);
   const [user, setUser] = React.useState(props.preferences!.user);
   const [host, setHost] = React.useState(props.preferences!.host);
@@ -72,15 +72,14 @@ const Preferences: React.FC<PreferencesProps> = (props) => {
 
   return (
     <div>
-      <p className="mt-1">
-        Preferences for <strong>{props.preferences!.name}</strong>.
+      <header className="mt-1">
+        <strong className="mb-1">Preferences:</strong>
         {props.preferences!.name === DEFAULT_PROFILE_NAME && (
-          <React.Fragment>
-            <br/>
+          <p>
             <em>Messing up with the default profile is not so cool. Create a new one for you!</em>
-          </React.Fragment>
+          </p>
         )}
-      </p>
+      </header>
       <span>
         Mode:
       </span>
@@ -173,4 +172,4 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
   }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Preferences));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(PreferencesView));

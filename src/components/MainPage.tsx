@@ -3,7 +3,7 @@ import { Redirect } from 'react-router';
 import { Tab, TabBar } from 'react-smart-tabs';
 import Container from 'react-bootstrap/Container';
 import { retrieveIsLoggedIn } from '../utils/login-session';
-import Preferences from './Preferences';
+import PreferencesView from './PreferencesView';
 import WorkingCall from './WorkingCall';
 import WorkingCallTabHeader from './WorkingCallTabHeader';
 import ContactsView from './ContactsView';
@@ -49,7 +49,7 @@ const MainPage: React.FunctionComponent = () => {
         </Tab>
         <Tab tabHeader={<MaterialIcon title="Preferences" icon="settings" />}>
           <Container className="main-tab-panel">
-            <Preferences />
+            <PreferencesView />
           </Container>
         </Tab>
       </TabBar>

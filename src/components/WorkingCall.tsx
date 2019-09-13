@@ -25,11 +25,10 @@ const WorkingCall: React.FC<WorkingCallProps> = (props) => {
 
   if (NO_CALL_STATUS_SET.includes(props.telephony.callStatus)) {
     return (
-      <div className="d-flex flex-column h-100 justify-content-center align-items-center text-center">
-        <p>
-          Currently not in call.
-        </p>
-      </div>
+      <header className="mt-1">
+        <strong className="d-block mb-1">Current call:</strong>
+        <span className="d-block">Currently none.</span>
+      </header>
     );
   }
 

@@ -54,7 +54,7 @@ const HistoryView: React.FC<HistoryViewProps> = (props) => {
         </ListGroup>
       ) : (
         <p>
-          <small>Empty call history.</small>
+          Empty call history.
         </p>
       )}
     </section>

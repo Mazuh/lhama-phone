@@ -32,11 +32,6 @@ code {
   height: 55px;
 }
 
-.history-list .list-group {
-  height: calc(100vh - 200px);
-  overflow-y: auto;
-}
-
 .profiles-list-group {
   height: calc(100vh - 230px);
   overflow-x: hidden;
@@ -48,7 +43,8 @@ code {
 }
 
 .main-tab-panel {
-  height: calc(100vh - 60px);
+  height: calc(100vh - 200px);
   overflow-y: auto;
   overflow-x: hidden;
+  padding-top: 10px;
 }

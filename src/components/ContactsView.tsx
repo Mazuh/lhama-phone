@@ -67,6 +67,9 @@ const ContactsView: React.FC<ContactsViewProps> = (props) => {
 
   return (
     <div>
+      <header className="d-flex justify-content-between">
+        <strong>Conacts:</strong>
+      </header>
       {props.contacts.entries.length === 0 ? (
         <p className="mt-5 text-center">
           No contacts yet.
@@ -82,7 +85,7 @@ const ContactsView: React.FC<ContactsViewProps> = (props) => {
             className={`d-flex align-items-center ${contactBgClass(contact)}`}
           >
             <span
-              className="flex-grow-1 pb-2 pt-2 pointer"
+              className="flex-grow-1 pointer"
               role="button"
               onClick={onClickToEnableOpsFn(contact)}
             >

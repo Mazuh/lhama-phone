@@ -12,10 +12,11 @@ const WorkingCallTabHeader: React.FC<WorkingCallTabHeaderProps> = (props) => {
   const icon = getCallIconName(props.telephony.callStatus, hasIncomingCall);
   const description = getCallDescription(props.telephony.callStatus, hasIncomingCall);
   return (
-    <div className={`d-flex text-align-center${hasIncomingCall ? ' text-warning' : ''}`}>
-      <MaterialIcon icon={icon} className="size-18 mr-1" />
-      <span>{description}</span>
-    </div>
+    <MaterialIcon
+      icon={icon}
+      title={description}
+      className={hasIncomingCall ? ' text-warning' : ''}
+    />
   );
 };
 
@@ -51,7 +52,7 @@ const getCallDescription = (status: CallStatus|null, hasIncomingCall: boolean): 
     case CallStatus.Failed:
     case CallStatus.Terminated:
     default:
-      return 'No call';
+      return 'Currently not in call';
   }
 };
 

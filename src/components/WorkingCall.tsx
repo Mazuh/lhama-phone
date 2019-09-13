@@ -27,11 +27,7 @@ const WorkingCall: React.FC<WorkingCallProps> = (props) => {
     return (
       <div className="d-flex flex-column h-100 justify-content-center align-items-center text-center">
         <p>
-          Currently not in call. <br />
-        </p>
-        <p>
-          Click at <strong>Make call</strong> tab <br />
-          and start a new one!
+          Currently not in call.
         </p>
       </div>
     );

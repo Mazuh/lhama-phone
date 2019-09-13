@@ -5,12 +5,12 @@ import MaterialIcon from '@material/react-material-icon';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { CallLog, CallDirection, clearCallHistory, CallOutcome } from '../redux/history';
 
-interface HistoryListProps {
+interface HistoryViewProps {
   logs?: Array<CallLog>,
   clearCallHistory?: () => void,
 }
 
-const HistoryList: React.FC<HistoryListProps> = (props) => {
+const HistoryView: React.FC<HistoryViewProps> = (props) => {
   const tryClearHistory = (event: React.SyntheticEvent) => {
     event.preventDefault();
 
@@ -30,7 +30,8 @@ const HistoryList: React.FC<HistoryListProps> = (props) => {
       {props.logs && props.logs.length ? (
         <ListGroup>
           {props.logs.map(({ uuid, direction, outcome, number, startedAt }) => (
-            <ListGroup.Item key={uuid} className="d-flex align-items-center p-1">
+            <ListGroup.Item key={uuid} role="row">
+              <span className="d-flex align-items-center">
                 {direction === CallDirection.Inbound && (
                   outcome === CallOutcome.Completed ? (
                     <MaterialIcon icon="call_received" title="Received (inbound)" />
@@ -45,8 +46,9 @@ const HistoryList: React.FC<HistoryListProps> = (props) => {
                     <MaterialIcon icon="call_missed_outgoing" title="Made (outbound) but missed" />
                   )
                 )}
-                <span>{number}</span>
-                <small className="ml-1">at {startedAt.toLocaleString()}</small>
+                {number}
+              </span>
+              <small>at {startedAt.toLocaleString()}</small>
             </ListGroup.Item>
           ))}
         </ListGroup>
@@ -72,4 +74,4 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
   }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(HistoryList);
+export default connect(mapStateToProps, mapDispatchToProps)(HistoryView);

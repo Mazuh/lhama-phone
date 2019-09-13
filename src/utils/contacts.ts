@@ -1,6 +1,7 @@
 import { Contact } from "../redux/contacts";
 
 const rNotAlphaNumeric = /[^a-z0-9]/g;
+const rQuotes = /['"]/g;
 
 const clearPhone = (phone: string): string => phone.replace(rNotAlphaNumeric, '');
 
@@ -33,4 +34,8 @@ export function findByPhone(phone: string, contacts: Array<Contact>): Contact|nu
     const isSimilar = isSimilarSize && isSimilarEnd;
     return isSimilar;
   }) || null;
+}
+
+export function clearToAdd(phoneOrName: string): string {
+  return phoneOrName.trim().replace(rQuotes, '');
 }

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import uuid from 'uuid';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { clearToAdd } from '../utils/contacts';
 import { Contact, addContact, editContact } from '../redux/contacts';
 
 interface ContactFormProps {
@@ -21,8 +22,8 @@ const ContactForm: React.FC<ContactFormProps> = (props) => {
     const form = event.target as HTMLFormElement;
     const contact: Contact = {
       uuid: (props.contact && props.contact.uuid) || uuid.v4(),
-      name: form.cname.value,
-      phone: form.phone.value,
+      name: clearToAdd(form.cname.value),
+      phone: clearToAdd(form.phone.value),
     };
 
     if (props.editing) {

@@ -10,13 +10,11 @@ interface WorkingCallTabHeaderProps {
 const WorkingCallTabHeader: React.FC<WorkingCallTabHeaderProps> = (props) => {
   const hasIncomingCall = !!props.telephony.incomingCall;
   const icon = getCallIconName(props.telephony.callStatus, hasIncomingCall);
+  const notDefaultIcon = icon !== 'smartphone';
   const description = getCallDescription(props.telephony.callStatus, hasIncomingCall);
+  const colorClass = (hasIncomingCall && 'text-warning') || (notDefaultIcon && 'text-info') || '';
   return (
-    <MaterialIcon
-      icon={icon}
-      title={description}
-      className={hasIncomingCall ? ' text-warning' : ''}
-    />
+    <MaterialIcon icon={icon} title={description} className={colorClass} />
   );
 };
 

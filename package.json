@@ -39,8 +39,9 @@
     "webrtc-adapter": "^7.2.9"
   },
   "scripts": {
-    "start": "npm run start:web & (sleep 5; npm run electron 2>/dev/null)",
-    "start:web": "BROWSER=none react-scripts start",
+    "start:no-browser": "BROWSER=none react-scripts start",
+    "start:web": "BROWSER=chrome react-scripts start",
+    "start:gambiarra": "npm run start:no-browser & (sleep 5; npm run electron 2>/dev/null)",
     "electron": "electron .",
     "build": "react-scripts build",
     "test": "react-scripts test",

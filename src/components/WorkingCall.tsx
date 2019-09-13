@@ -10,6 +10,7 @@ import {
 } from '../redux/telephony';
 import IconButton from './dumb/IconButton';
 import IncomingCallPrompt from './IncomingCallPrompt';
+import Phone from './Phone';
 
 interface WorkingCallProps {
   telephony: TelephonyState;
@@ -49,7 +50,7 @@ const WorkingCall: React.FC<WorkingCallProps> = (props) => {
       <header className="mb-3">
         <span>In call:</span>
         <br />
-        <h4>{props.telephony.number || 'Unknown'}</h4>
+        <h4>{props.telephony.number ? <Phone>{props.telephony.number}</Phone> : 'Unknown'}</h4>
       </header>
       <div className="d-flex">
         {props.telephony.isAudioInputMuted ? (

@@ -4,10 +4,11 @@ import { AnyAction, Dispatch, bindActionCreators } from 'redux';
 import MaterialIcon from '@material/react-material-icon';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { CallLog, CallDirection, clearCallHistory, CallOutcome } from '../redux/history';
+import Phone from './Phone';
 
 interface HistoryViewProps {
-  logs?: Array<CallLog>,
-  clearCallHistory?: () => void,
+  logs?: Array<CallLog>;
+  clearCallHistory?: () => void;
 }
 
 const HistoryView: React.FC<HistoryViewProps> = (props) => {
@@ -46,7 +47,7 @@ const HistoryView: React.FC<HistoryViewProps> = (props) => {
                     <MaterialIcon icon="call_missed_outgoing" title="Made (outbound) but missed" />
                   )
                 )}
-                {number}
+                <Phone>{number}</Phone>
               </span>
               <small>at {startedAt.toLocaleString()}</small>
             </ListGroup.Item>
@@ -61,12 +62,9 @@ const HistoryView: React.FC<HistoryViewProps> = (props) => {
   );
 };
 
-
-const mapStateToProps = ({ history }: any): any => {
-  return {
-    ...history,
-  };
-};
+const mapStateToProps = ({ history }: any): any => ({
+  logs: history.logs,
+});
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
   return bindActionCreators({

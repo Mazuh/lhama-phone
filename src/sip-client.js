@@ -1,5 +1,7 @@
-// import 'webrtc-adapter';
-// import QualityOfService from './QualityOfService';
+/**
+ * @see https://github.com/flowroute/jssip_client
+ */
+import 'webrtc-adapter';
 import { UA } from 'sip.js';
 
 export const FR_POINTS_OF_PRESENCE_DOMAINS = {

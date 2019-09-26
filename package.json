@@ -41,7 +41,7 @@
   "scripts": {
     "start": "npm run start:no-browser",
     "start:no-browser": "BROWSER=none react-scripts start",
-    "start:web": "BROWSER=chrome react-scripts start",
+    "start:web": "react-scripts start",
     "start:gambiarra": "npm run start:no-browser & (sleep 5; npm run electron 2>/dev/null)",
     "electron": "electron .",
     "build": "react-scripts build",

@@ -34,7 +34,7 @@ export interface HistoryState {
   logs: Array<CallLog>;
 }
 
-const initialState: HistoryState = {
+export const initialState: HistoryState = {
   logs: [],
 }
 

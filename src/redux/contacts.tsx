@@ -31,7 +31,7 @@ export interface ContactsState {
   entries: Array<Contact>;
 }
 
-const initialState: ContactsState = {
+export const initialState: ContactsState = {
   entries: [],
 }
 

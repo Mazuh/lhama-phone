@@ -12,9 +12,9 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import { retrieveProfileList, retrieveProfileContent, persistProfileList } from '../utils/profiles';
 import { persistLogin, retrieveIsLoggedIn } from '../utils/login-session';
 import { persistCurrentPreferences } from '../redux';
-import { setPreferencesName, setPreferences, DEFAULT_PROFILE_NAME } from '../redux/preferences';
-import { setHistory } from '../redux/history';
-import { setContacts, ContactsState } from '../redux/contacts';
+import { setPreferencesName, setPreferences, DEFAULT_PROFILE_NAME, initialState as preferencesInitialState } from '../redux/preferences';
+import { setHistory, initialState as historyInitialState } from '../redux/history';
+import { setContacts, ContactsState, initialState as contactsInitialState } from '../redux/contacts';
 
 interface WelcomePageProps {
   history: History;
@@ -59,7 +59,10 @@ const WelcomePage: React.FunctionComponent<WelcomePageProps> = (props) => {
       props.setHistory!(profileContent.history);
       props.setContacts!(profileContent.contacts);
     } else {
+      props.setPreferences!(preferencesInitialState);
       props.setPreferencesName!(profile);
+      props.setHistory!(historyInitialState);
+      props.setContacts!(contactsInitialState);
     }
 
     persistLogin();

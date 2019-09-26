@@ -56,7 +56,7 @@ export interface PreferencesState {
   password: string,
 }
 
-const initialState: PreferencesState = {
+export const initialState: PreferencesState = {
   name: DEFAULT_PROFILE_NAME,
   mode: PreferencesMode.Flowroute,
   server: 'us-west-or',

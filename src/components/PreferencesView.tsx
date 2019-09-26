@@ -66,7 +66,6 @@ const PreferencesView: React.FC<PreferencesViewProps> = (props) => {
     }
 
     purgePersistedProfile(props.preferences!.name);
-    window.alert(`Purged "${props.preferences!.name}" profile.`);
     goToProfileSelection();
   }
 

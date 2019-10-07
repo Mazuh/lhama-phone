@@ -47,7 +47,7 @@ code {
 }
 
 .main-tab-panel {
-  height: calc(100vh - 200px);
+  height: calc(100vh - 140px);
   overflow-y: auto;
   overflow-x: hidden;
   padding-top: 10px;

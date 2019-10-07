@@ -4,11 +4,13 @@ import { AnyAction, Dispatch, bindActionCreators } from 'redux';
 import MaterialIcon from '@material/react-material-icon';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { CallLog, CallDirection, clearCallHistory, CallOutcome } from '../redux/history';
+import { doCall } from '../redux/telephony';
 import Phone from './Phone';
 
 interface HistoryViewProps {
   logs?: Array<CallLog>;
   clearCallHistory?: () => void;
+  doCall?(params: { destiny: string }): void;
 }
 
 const HistoryView: React.FC<HistoryViewProps> = (props) => {
@@ -31,7 +33,7 @@ const HistoryView: React.FC<HistoryViewProps> = (props) => {
       {props.logs && props.logs.length ? (
         <ListGroup>
           {props.logs.map(({ uuid, direction, outcome, number, startedAt }) => (
-            <ListGroup.Item key={uuid} role="row">
+            <ListGroup.Item key={uuid} role="row" onClick={() => props.doCall && props.doCall({ destiny: number })}>
               <span className="d-flex align-items-center">
                 {direction === CallDirection.Inbound && (
                   outcome === CallOutcome.Completed ? (
@@ -69,6 +71,7 @@ const mapStateToProps = ({ history }: any): any => ({
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
   return bindActionCreators({
     clearCallHistory,
+    doCall,
   }, dispatch);
 }
 

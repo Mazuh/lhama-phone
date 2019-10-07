@@ -209,7 +209,11 @@ export function clearClient() {
 export function doCall(params: { destiny: string }) {
   return (dispatch: Dispatch<TelephonyAction|HistoryAction>, getState: Function) => {
     const { client } = getState().telephony as TelephonyState;
-    if (!client) {
+
+    try {
+      client!.call({ to: params.destiny });
+    } catch (error) {
+      console.error('[Telephony actions] Error when trying to call', error);
       return;
     }
 
@@ -228,8 +232,6 @@ export function doCall(params: { destiny: string }) {
         outcome: CallOutcome.Completed,
       },
     });
-
-    client.call({ to: params.destiny });
   };
 }
 

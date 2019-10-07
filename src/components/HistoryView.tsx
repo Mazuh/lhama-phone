@@ -33,7 +33,11 @@ const HistoryView: React.FC<HistoryViewProps> = (props) => {
       {props.logs && props.logs.length ? (
         <ListGroup>
           {props.logs.map(({ uuid, direction, outcome, number, startedAt }) => (
-            <ListGroup.Item key={uuid} role="row" onClick={() => props.doCall && props.doCall({ destiny: number })}>
+            <ListGroup.Item
+              key={uuid} role="row"
+              onClick={() => props.doCall!({ destiny: number })}
+              className="c-pointer"
+            >
               <span className="d-flex align-items-center">
                 {direction === CallDirection.Inbound && (
                   outcome === CallOutcome.Completed ? (

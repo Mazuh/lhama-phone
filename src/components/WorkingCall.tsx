@@ -11,6 +11,7 @@ import {
 import IconButton from './dumb/IconButton';
 import IncomingCallPrompt from './IncomingCallPrompt';
 import Phone from './Phone';
+import Dialpad from './Dialpad';
 
 interface WorkingCallProps {
   telephony: TelephonyState;
@@ -20,6 +21,8 @@ interface WorkingCallProps {
 }
 
 const WorkingCall: React.FC<WorkingCallProps> = (props) => {
+  const [isDialpadOpen, setDialpadOpen] = React.useState(false);
+
   if (props.telephony.incomingCall) {
     return <IncomingCallPrompt />;
   }
@@ -41,7 +44,12 @@ const WorkingCall: React.FC<WorkingCallProps> = (props) => {
   const onHearingClick = () => {
     const toggled = !props.telephony.isAudioOutputMuted;
     props.setOutputMuted(toggled);
-  }
+  };
+
+  const onDialpadClick = () => {
+    const toggled = !isDialpadOpen;
+    setDialpadOpen(toggled);
+  };
 
   return (
     <div
@@ -76,10 +84,20 @@ const WorkingCall: React.FC<WorkingCallProps> = (props) => {
           </div>
         )}
         <div className="ml-2 mr-2">
+          <IconButton icon="dialpad"
+            variant={isDialpadOpen ? 'dark' : 'outline-dark'}
+            onClick={onDialpadClick}
+          />
+          <span className="d-block">Dialpad</span>
+        </div>
+        <div className="ml-2 mr-2">
           <IconButton icon="phone_hangup" variant="danger" onClick={() => props.hangup()} />
           <span className="d-block">Hangup</span>
         </div>
       </div>
+      {isDialpadOpen && (
+        <Dialpad />
+      )}
     </div>
   );
 };

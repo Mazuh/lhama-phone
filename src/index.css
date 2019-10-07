@@ -52,3 +52,13 @@ code {
   overflow-x: hidden;
   padding-top: 10px;
 }
+
+.dialpad .dialpad__digit {
+  background-color: #f8f9fa;
+  color: black;
+}
+
+.dialpad .dialpad__digit:hover {
+  background-color: #007bff;
+  color: white;
+}

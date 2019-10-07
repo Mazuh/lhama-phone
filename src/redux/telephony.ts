@@ -301,6 +301,12 @@ export function setOutputMuted(isMuted: boolean) {
   });
 }
 
+export function sendDTMF(digit: string) {
+  return createClientThunk((client) => {
+    client.sendDTMF(digit);
+  });
+}
+
 export interface TelephonyState {
   client: SIPClient|null;
   userAgentStatus: UserAgentStatus;

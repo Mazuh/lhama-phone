@@ -342,6 +342,20 @@ export default class SIPClient {
   }
 
   /**
+   * Sends "dual tone multi frequency" (DTMF) over a SIP INFO request
+   * of the current call.
+   *
+   * @param {string} digit
+   */
+  sendDTMF(digit) {
+    if (!this.activeCall) {
+      return;
+    }
+
+    this.activeCall.dtmf(digit);
+  }
+
+  /**
    * Add a P-header to client calls.
    *
    * @param {string} name
